@@ -1,6 +1,9 @@
 package edu.hw1;
 
-public class Task7 {
+public final class Task7 {
+
+    private Task7() {
+    }
 
     public static int rotateLeft(int receivedNumber, int shift) {
         if (shift < 0 || receivedNumber < 0) {
@@ -9,11 +12,11 @@ public class Task7 {
 
         char[] binNumberArray = Integer.toBinaryString(receivedNumber).toCharArray();
 
-        shift = shift % binNumberArray.length;
+        int shiftWithoutCycle = shift % binNumberArray.length;
 
         char[] resultNumber = new char[binNumberArray.length];
         for (int digitIndex = 0; digitIndex < binNumberArray.length; digitIndex++) {
-            int newPosIndex = digitIndex - shift;
+            int newPosIndex = digitIndex - shiftWithoutCycle;
 
             if (newPosIndex < 0) {
                 newPosIndex += binNumberArray.length;
@@ -32,11 +35,11 @@ public class Task7 {
 
         char[] binNumberArray = Integer.toBinaryString(receivedNumber).toCharArray();
 
-        shift = shift % binNumberArray.length;
+        int shiftWithoutCycle = shift % binNumberArray.length;
 
         char[] resultNumber = new char[binNumberArray.length];
         for (int digitIndex = 0; digitIndex < binNumberArray.length; digitIndex++) {
-            int newPosIndex = digitIndex + shift;
+            int newPosIndex = digitIndex + shiftWithoutCycle;
 
             if (newPosIndex >= binNumberArray.length) {
                 newPosIndex -= binNumberArray.length;

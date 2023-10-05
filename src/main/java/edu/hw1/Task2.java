@@ -1,14 +1,19 @@
 package edu.hw1;
 
-public class Task2 {
+public final class Task2 {
+
+    private Task2() {
+    }
+
+    private static final int NUMBER_SYSTEM_SIZE = 10;
 
     public static int countDigits(long receivedNumber) {
-        receivedNumber = Math.abs(receivedNumber);
+        long unsignedReceivedNumber = Math.abs(receivedNumber);
 
         int digitsCount = 0;
-        while (receivedNumber > 0) {
+        while (unsignedReceivedNumber > 0) {
             digitsCount++;
-            receivedNumber /= 10;
+            unsignedReceivedNumber /= NUMBER_SYSTEM_SIZE;
         }
 
         return digitsCount;

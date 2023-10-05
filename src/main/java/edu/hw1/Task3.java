@@ -1,6 +1,9 @@
 package edu.hw1;
 
-public class Task3 {
+public final class Task3 {
+
+    private Task3() {
+    }
 
     private static long minLongArray(long[] receivedArray) {
         long minNumber = Long.MAX_VALUE;
@@ -31,7 +34,8 @@ public class Task3 {
             return false;
         }
 
-        if (minLongArray(nestableArray) > minLongArray(containArray) && maxLongArray(nestableArray) < maxLongArray(containArray)) {
+        if (minLongArray(nestableArray) > minLongArray(containArray)
+            && maxLongArray(nestableArray) < maxLongArray(containArray)) {
             return true;
         }
         return false;

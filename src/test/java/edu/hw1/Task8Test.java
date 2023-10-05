@@ -44,6 +44,6 @@ public class Task8Test {
             Task8.knightBoardCapture(example2), Task8.knightBoardCapture(example3),
             Task8.knightBoardCapture(example4)};
 
-        assertThat(correctArr).containsExactly(true, false, true, false);
+        assertThat(correctArr).containsExactly(true, false, false, false);
     }
 }

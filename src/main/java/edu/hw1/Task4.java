@@ -1,6 +1,9 @@
 package edu.hw1;
 
-public class Task4 {
+public final class Task4 {
+
+    private Task4() {
+    }
 
     public static String fixString(String receivedString) {
         if (receivedString == null) {

@@ -2,7 +2,14 @@ package edu.hw1;
 
 import java.util.Arrays;
 
-public class Task6 {
+public final class Task6 {
+
+    private Task6() {
+    }
+
+    private static final int CYCLE_LIMIT = 7;
+
+    private static final int K_NUMBER = 6174;
 
     private static int cyclesCount = 0;
 
@@ -13,9 +20,9 @@ public class Task6 {
 
         cyclesCount++;
 
-        if (cyclesCount == 7) {
+        if (cyclesCount == CYCLE_LIMIT) {
             cyclesCount = 0;
-            return -7;
+            return -CYCLE_LIMIT;
         }
 
         char[] digitsArray = Integer.toString((receivedNumber)).toCharArray();
@@ -26,7 +33,7 @@ public class Task6 {
 
         upperSortNumber -= lowerSortNumber;
 
-        if (upperSortNumber == 6174) {
+        if (upperSortNumber == K_NUMBER) {
             cyclesCount = 0;
             return 1;
         } else {
