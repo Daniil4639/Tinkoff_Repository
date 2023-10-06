@@ -34,10 +34,7 @@ public final class Task3 {
             return false;
         }
 
-        if (minLongArray(nestableArray) > minLongArray(containArray)
-            && maxLongArray(nestableArray) < maxLongArray(containArray)) {
-            return true;
-        }
-        return false;
+        return minLongArray(nestableArray) > minLongArray(containArray)
+            && maxLongArray(nestableArray) < maxLongArray(containArray);
     }
 }

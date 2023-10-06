@@ -2,21 +2,34 @@ package edu.hw1;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
+import java.util.stream.Stream;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class Task4Test {
 
-    @Test
+    @ParameterizedTest(name = "#{index} - Run with args = {0}")
+    @ArgumentsSource(TestArgumentsProvider.class)
     @DisplayName("Проверка работы fixString()")
-    void testFixString() {
-        String example1 = "9471387", example2 = " Iendem ro eopew!r", example3 = "oevsdgvernoisgj", example4 = "", example5 = null;
+    void testFixString(String testString, String answer) {
 
-        String[] correctArr = {Task4.fixString(example1),
-            Task4.fixString(example2),
-            Task4.fixString(example3),
-            Task4.fixString(example4),
-            Task4.fixString(example5)};
+        assertThat(Task4.fixString(testString)).isEqualTo(answer);
+    }
 
-        assertThat(correctArr).containsExactly("4917837", "I need more power!", "eosvgdevnriogsj", "", null);
+    static class TestArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            return Stream.of(
+                Arguments.of("9471387", "4917837"),
+                Arguments.of(" Iendem ro eopew!r", "I need more power!"),
+                Arguments.of("oevsdgvernoisgj", "eosvgdevnriogsj"),
+                Arguments.of("", ""),
+                Arguments.of(null, null)
+            );
+        }
     }
 }

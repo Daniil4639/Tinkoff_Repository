@@ -10,10 +10,24 @@ public final class Task1 {
     public static long minutesToSeconds(String time) {
         String[] tokenArray = time.split(":");
 
-        if (Long.parseLong(tokenArray[1]) >= SECONDS_IN_MINUTE || tokenArray.length != 2) {
+        if (tokenArray.length != 2) {
             return -1;
         }
 
-        return Long.parseLong(tokenArray[1]) + Long.parseLong(tokenArray[0]) * SECONDS_IN_MINUTE;
+        long receivedTimeSeconds;
+        long receivedTimeMinutes;
+
+        try {
+            receivedTimeSeconds = Long.parseLong(tokenArray[1]);
+            receivedTimeMinutes = Long.parseLong(tokenArray[0]);
+        } catch (NumberFormatException numberFormatException) {
+            return -1;
+        }
+
+        if (receivedTimeSeconds >= SECONDS_IN_MINUTE) {
+            return -1;
+        } else {
+            return receivedTimeSeconds + receivedTimeMinutes * SECONDS_IN_MINUTE;
+        }
     }
 }

@@ -2,48 +2,69 @@ package edu.hw1;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
+import java.util.stream.Stream;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class Task8Test {
 
-    @Test
+    @ParameterizedTest(name = "#{index} - Run with args = {0}")
+    @ArgumentsSource(TestArgumentsProvider.class)
     @DisplayName("Проверка работы knightBoardCapture()")
-    void testKnightBoardCapture() {
-        int[][] example1 = {{0, 0, 0, 1, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 1, 0, 0, 0, 1, 0, 0},
-            {0, 0, 0, 0, 1, 0, 1, 0},
-            {0, 1, 0, 0, 0, 1, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 1, 0, 0, 0, 0, 0, 1},
-            {0, 0, 0, 0, 1, 0, 0, 0}};
+    void testKnightBoardCapture(int[][] board, boolean answer) {
 
-        int[][] example2 = {{0, 0, 0, 0, 1, 0, 0, 0},
-            {0, 0, 0, 0, 0, 1, 0, 0},
-            {0, 0, 0, 1, 0, 0, 0, 0},
-            {1, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 1, 0, 0, 0},
-            {0, 0, 0, 0, 0, 1, 0, 0},
-            {0, 0, 0, 0, 0, 1, 0, 0},
-            {1, 0, 0, 0, 0, 0, 0, 0}};
+        assertThat(Task8.knightBoardCapture(board)).isEqualTo(answer);
+    }
 
-        int[][] example3 = {{1, 1, 1, 1, 1, 1, 1, 1},
-            {1, 1, 1, 1, 1, 1, 1, 1},
-            {1, 1, 1, 1, 1, 1, 1, 1},
-            {1, 1, 1, 1, 1, 1, 1, 1},
-            {1, 1, 1, 1, 1, 1, 1, 1},
-            {1, 1, 1, 1, 1, 1, 1, 1},
-            {1, 1, 1, 1, 1, 1, 1, 1},
-            {1, 1, 1, 1, 1, 1, 1, 1}};
+    static class TestArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
 
-        int[][] example4 = {{1, 0, 1, 0, 0},
-            {0, 1, 1, 1, 0},
-            {1, 1, 0, 0, 0}};
+            int[][] example1 = {
+                {0, 0, 0, 1, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 1, 0, 0, 0, 1, 0, 0},
+                {0, 0, 0, 0, 1, 0, 1, 0},
+                {0, 1, 0, 0, 0, 1, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 1, 0, 0, 0, 0, 0, 1},
+                {0, 0, 0, 0, 1, 0, 0, 0}};
 
-        boolean[] correctArr = {Task8.knightBoardCapture(example1),
-            Task8.knightBoardCapture(example2), Task8.knightBoardCapture(example3),
-            Task8.knightBoardCapture(example4)};
+            int[][] example2 = {
+                {0, 0, 0, 0, 1, 0, 0, 0},
+                {0, 0, 0, 0, 0, 1, 0, 0},
+                {0, 0, 0, 1, 0, 0, 0, 0},
+                {1, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 1, 0, 0, 0},
+                {0, 0, 0, 0, 0, 1, 0, 0},
+                {0, 0, 0, 0, 0, 1, 0, 0},
+                {1, 0, 0, 0, 0, 0, 0, 0}};
 
-        assertThat(correctArr).containsExactly(true, false, false, false);
+            int[][] example3 = {
+                {1, 1, 1, 1, 1, 1, 1, 1},
+                {1, 1, 1, 1, 1, 1, 1, 1},
+                {1, 1, 1, 1, 1, 1, 1, 1},
+                {1, 1, 1, 1, 1, 1, 1, 1},
+                {1, 1, 1, 1, 1, 1, 1, 1},
+                {1, 1, 1, 1, 1, 1, 1, 1},
+                {1, 1, 1, 1, 1, 1, 1, 1},
+                {1, 1, 1, 1, 1, 1, 1, 1}};
+
+            int[][] example4 = {
+                {1, 0, 1, 0, 0},
+                {0, 1, 1, 1, 0},
+                {1, 1, 0, 0, 0}};
+
+            return Stream.of(
+                Arguments.of(example1, true),
+                Arguments.of(example2, false),
+                Arguments.of(example3, false),
+                Arguments.of(example4, false)
+            );
+        }
     }
 }
