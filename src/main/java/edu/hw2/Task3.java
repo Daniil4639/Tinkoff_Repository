@@ -1,14 +1,14 @@
 package edu.hw2;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Task3 {
 
     private Task3() {
     }
 
-    private final static Logger LOGGER = LogManager.getLogger();
+    private final static Logger LOGGER = LoggerFactory.getLogger(Task3.class);
     private final static String SUCCESS_CONNECTION = "Connection is established!";
     private final static String CONNECTION_CLOSED = "Connection was closed!";
     private final static int PERCENT_100 = 100;
@@ -26,12 +26,12 @@ public class Task3 {
     public static class StableConnection implements Connection {
         @Override
         public void execute(String command) { //всегда срабатывает
-            LOGGER.trace(SUCCESS_CONNECTION);
+            LOGGER.info(SUCCESS_CONNECTION);
         }
 
         @Override
         public void close() throws Exception {
-            LOGGER.trace(CONNECTION_CLOSED);
+            LOGGER.info(CONNECTION_CLOSED);
         }
     }
 
@@ -43,13 +43,13 @@ public class Task3 {
             if (randomConnect <= PERCENT_90) { // ~90% шанс потери соединения
                 throw new ConnectionException();
             } else {
-                LOGGER.trace(SUCCESS_CONNECTION);
+                LOGGER.info(SUCCESS_CONNECTION);
             }
         }
 
         @Override
         public void close() throws Exception {
-            LOGGER.trace(CONNECTION_CLOSED);
+            LOGGER.info(CONNECTION_CLOSED);
         }
     }
 
@@ -92,8 +92,7 @@ public class Task3 {
                     break;
                 } catch (ConnectionException connectionException) {
 
-                    LOGGER.trace("№" + Integer.toString(attemptCount + 1)
-                        + ": Connection error!");
+                    LOGGER.info("Connection error!");
 
                 }
                 attemptCount++;
@@ -101,7 +100,7 @@ public class Task3 {
                 try {
                     connect.close();
                 } catch (Exception exception) {
-                    LOGGER.trace("Connection close was failed!");
+                    LOGGER.info("Connection close was failed!");
                     limitExceed = false;
                     break;
                 }
@@ -109,7 +108,7 @@ public class Task3 {
             while (attemptCount < maxAttempts);
 
             if (limitExceed) {
-                LOGGER.trace("Limit of attempts was exceeded!");
+                LOGGER.info("Limit of attempts was exceeded!");
             }
         }
     }
