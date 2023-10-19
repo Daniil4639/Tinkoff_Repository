@@ -83,7 +83,7 @@ public class HangmanGame {
     }
 
     private void gameEscalating(GuessedWord guessedWord, UnknownWord unknownWord)
-        throws WordsExceptions.WordAlreadyHasTheLetterException {
+        throws WordsExceptions.ProgramEnd {
 
         int currentAttempts = maxAttemptsCount;
 
@@ -94,7 +94,7 @@ public class HangmanGame {
 
             char inputLetter = getInputLetter();
             if (inputLetter == '\0') {
-                throw new WordsExceptions.WordAlreadyHasTheLetterException();
+                throw new WordsExceptions.ProgramEnd();
             }
 
             boolean checkIsOk;
@@ -141,7 +141,7 @@ public class HangmanGame {
 
         try {
             gameEscalating(guessedWord, unknownWord);
-        } catch (WordsExceptions.WordAlreadyHasTheLetterException wordAlreadyHasTheLetterException) {
+        } catch (WordsExceptions.ProgramEnd programEnd) {
             LOGGER.info("You decided to finish the game!");
         }
 
