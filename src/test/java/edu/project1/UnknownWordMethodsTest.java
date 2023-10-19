@@ -6,8 +6,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.stream.Stream;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -30,7 +28,7 @@ public class UnknownWordMethodsTest {
             boolean answer2 = unknownWord.checkTheLetter(guessedWord, secondSymbol);
 
             assertThat(answer2).isEqualTo(secondAnswer);
-        } catch (WordAlreadyHasTheLetterException wordAlreadyHasTheLetterException){
+        } catch (WordsExceptions.WordAlreadyHasTheLetterException wordAlreadyHasTheLetterException){
             assertThat(true).isEqualTo(true);
         }
     }

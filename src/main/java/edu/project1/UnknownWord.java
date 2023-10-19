@@ -12,7 +12,8 @@ public class UnknownWord extends Word {
         super(StringUtils.repeat('*', receivedWord.getWord().length()));
     }
 
-    public boolean checkTheLetter(GuessedWord guessedWord, char symbol) throws WordAlreadyHasTheLetterException {
+    public boolean checkTheLetter(GuessedWord guessedWord, char symbol)
+        throws WordsExceptions.WordAlreadyHasTheLetterException {
         ArrayList<Integer> positionArray = guessedWord.whereIsTheLetter(symbol);
 
         if (positionArray.isEmpty()) {
@@ -23,7 +24,7 @@ public class UnknownWord extends Word {
 
         for (int iterator = 0; iterator < positionArray.size(); iterator++) {
             if (getWord().charAt(positionArray.get(iterator)) != '*') {
-                throw new WordAlreadyHasTheLetterException();
+                throw new WordsExceptions.WordAlreadyHasTheLetterException();
             } else {
                 newWord.setCharAt(positionArray.get(iterator), symbol);
             }

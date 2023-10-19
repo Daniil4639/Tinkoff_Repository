@@ -58,21 +58,33 @@ public class HangmanGame {
         return true;
     }
 
-    private char getInputLetter(){
+    private char getInputLetter() {
         String letter;
+        boolean inputOk = false;
+        char returnValue = ' ';
+
         do {
             letter = scanner.nextLine();
-            if (letter.length() == 1){
-                return letter.charAt(0);
+            if (letter.length() == 1) {
+                inputOk = true;
+                returnValue = letter.charAt(0);
 
             } else if (letter.equals("end")) {
-                return '\0';
+                inputOk = true;
+                returnValue = '\0';
             }
+
+            if (inputOk) {
+                return returnValue;
+            }
+
             LOGGER.info("Incorrect input! Repeat: (only 1 symbol)");
         } while (true);
     }
 
-    private void gameEscalating(GuessedWord guessedWord, UnknownWord unknownWord) {
+    private void gameEscalating(GuessedWord guessedWord, UnknownWord unknownWord)
+        throws WordsExceptions.WordAlreadyHasTheLetterException {
+
         int currentAttempts = maxAttemptsCount;
 
         LOGGER.info(unknownWord.getWord());
@@ -81,16 +93,17 @@ public class HangmanGame {
             LOGGER.info("You have " + Integer.toString(currentAttempts) + " attempts!");
 
             char inputLetter = getInputLetter();
-            if (inputLetter == '\0'){
-                LOGGER.info("You decided to finish the game!");
-                return;
+            if (inputLetter == '\0') {
+                throw new WordsExceptions.WordAlreadyHasTheLetterException();
             }
 
             boolean checkIsOk;
 
             try {
                 checkIsOk = unknownWord.checkTheLetter(guessedWord, inputLetter);
-            } catch (WordAlreadyHasTheLetterException wordAlreadyHasTheLetterException) {
+            } catch (WordsExceptions.WordAlreadyHasTheLetterException
+                wordAlreadyHasTheLetterException) {
+
                 LOGGER.info("You have already entered this letter!");
                 continue;
             }
@@ -126,7 +139,11 @@ public class HangmanGame {
         GuessedWord guessedWord = new GuessedWord(chooseRandomString());
         UnknownWord unknownWord = new UnknownWord(guessedWord);
 
-        gameEscalating(guessedWord, unknownWord);
+        try {
+            gameEscalating(guessedWord, unknownWord);
+        } catch (WordsExceptions.WordAlreadyHasTheLetterException wordAlreadyHasTheLetterException) {
+            LOGGER.info("You decided to finish the game!");
+        }
 
         LOGGER.info("The word was '" + guessedWord.getWord() + "'.");
     }
