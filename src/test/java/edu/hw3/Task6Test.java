@@ -1,5 +1,6 @@
 package edu.hw3;
 
+import edu.hw3.Task6.Task6;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.util.PriorityQueue;

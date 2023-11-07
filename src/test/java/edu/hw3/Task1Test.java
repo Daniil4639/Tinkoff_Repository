@@ -1,6 +1,6 @@
 package edu.hw3;
 
-import edu.hw3.Task1;
+import edu.hw3.Task1.Task1;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;

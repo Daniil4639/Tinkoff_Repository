@@ -1,4 +1,4 @@
-package edu.hw3;
+package edu.hw3.Task3;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,8 +11,8 @@ public class Task3 {
     public static <T> Map<T, Integer> freqDict(ArrayList<T> receivedArray) {
         Map<T, Integer> freqMap = new HashMap<>();
 
-        for (int iterator = 0; iterator < receivedArray.size(); iterator++) {
-            freqMap.merge(receivedArray.get(iterator), 1, Integer::sum);
+        for (T element: receivedArray) {
+            freqMap.merge(element, 1, Integer::sum);
         }
 
         return freqMap;

@@ -1,14 +1,15 @@
-package edu.hw3;
+package edu.hw3.Task2;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Task2 {
 
     private Task2() {}
 
-    public static ArrayList<String> clusterize(String receivedString) {
+    public static List<String> clusterize(String receivedString) {
         StringBuilder newArrayToken = new StringBuilder();
-        ArrayList<String> arrayOfTokens = new ArrayList<>();
+        List<String> arrayOfTokens = new ArrayList<>();
         int bracketCount = 0;
 
         for (int iterator = 0; iterator < receivedString.length(); iterator++) {

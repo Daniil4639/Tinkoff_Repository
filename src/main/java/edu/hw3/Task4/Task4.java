@@ -1,4 +1,4 @@
-package edu.hw3;
+package edu.hw3.Task4;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,7 +19,7 @@ public class Task4 {
         valueArray = ROMAN_DIGITS.keySet().toArray(valueArray);
         Arrays.sort(valueArray, Collections.reverseOrder());
 
-        String result = "";
+        StringBuilder result = new StringBuilder();
         int mapIterator = 0;
 
         while (number > 0) {
@@ -27,10 +27,10 @@ public class Task4 {
                 mapIterator++;
             }
 
-            result += ROMAN_DIGITS.get(valueArray[mapIterator]);
+            result.append(ROMAN_DIGITS.get(valueArray[mapIterator]));
             number -= valueArray[mapIterator];
         }
 
-        return result;
+        return result.toString();
     }
 }
