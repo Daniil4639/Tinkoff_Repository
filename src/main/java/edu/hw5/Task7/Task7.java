@@ -1,4 +1,4 @@
-package edu.hw5;
+package edu.hw5.Task7;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
