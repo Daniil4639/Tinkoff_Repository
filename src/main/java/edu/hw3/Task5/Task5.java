@@ -7,6 +7,8 @@ public class Task5 {
 
     private Task5() {}
 
+    private static final String SPACE_SEQUENCE = "\\s+";
+
     public static String[] parseContacts(String[] contactsArray, String param) {
         if (contactsArray == null) {
             return new String[0];
@@ -17,7 +19,7 @@ public class Task5 {
         return contactsArray;
     }
 
-    public static final class SecondNameComparator implements Comparator<String>{
+    public static final class SecondNameComparator implements Comparator<String> {
 
         private int mode;
 
@@ -31,8 +33,8 @@ public class Task5 {
 
         @Override
         public int compare(String firstStr, String secondStr) {
-            String[] firstArray = firstStr.split("\\s+");
-            String[] secondArray = secondStr.split("\\s+");
+            String[] firstArray = firstStr.split(SPACE_SEQUENCE);
+            String[] secondArray = secondStr.split(SPACE_SEQUENCE);
 
             int compareIndex = firstArray[firstArray.length - 1]
                 .compareTo(secondArray[secondArray.length - 1]);
