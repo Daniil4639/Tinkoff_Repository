@@ -1,271 +1,224 @@
 package edu.hw4;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Task {
 
+    private final static int MINIMUM_HEIGHT = 100;
+
     private Task() {}
 
-    // func 1
-    public static void heightAnimalSort(List<UsingClasses.Animal> receivedAnimals) {
-        receivedAnimals.sort(Comparator.comparingInt(UsingClasses.Animal::height));
+    // Task1: Отсортировать животных по росту от самого маленького к самому большому -> List<Animal>
+    public static List<UsingClasses.Animal> heightAnimalSort(List<UsingClasses.Animal> receivedAnimals) {
+        return receivedAnimals.stream()
+            .sorted(Comparator.comparingInt(UsingClasses.Animal::height))
+            .collect(Collectors.toList());
     }
 
-    //func 2
+    // Task2: Отсортировать животных по весу от самого тяжелого к самому легкому, выбрать k первых -> List<Animal>
     public static List<UsingClasses.Animal> weightAnimalSort(
         List<UsingClasses.Animal> receivedAnimals, int neededAnimalsCount) {
-        List<UsingClasses.Animal> newAnimalList = new ArrayList<>(List.copyOf(receivedAnimals));
 
-        newAnimalList.sort(Comparator.comparingInt(UsingClasses.Animal::weight));
-
-        return newAnimalList.reversed().stream().limit(neededAnimalsCount).collect(Collectors.toList());
+        return receivedAnimals.stream()
+            .sorted(Collections.reverseOrder(Comparator.comparingInt(UsingClasses.Animal::weight)))
+            .limit(neededAnimalsCount)
+            .collect(Collectors.toList())
+            .reversed();
     }
 
-    //func 3
+    // Task3: Сколько животных каждого вида -> Map<Animal.Type, Integer>
     public static Map<UsingClasses.Animal.Type, Integer> animalCounterPerType(
         List<UsingClasses.Animal> receivedAnimals) {
-        Map<UsingClasses.Animal.Type, Integer> typeCounter = new HashMap<>();
 
-        for (UsingClasses.Animal element: receivedAnimals) {
-            typeCounter.merge(element.type(), 1, Integer::sum);
-        }
-
-        return typeCounter;
+        return receivedAnimals.stream()
+            .collect(Collectors.groupingBy(UsingClasses.Animal::type, Collectors.summingInt(elem -> 1)));
     }
 
-    //func 4
+    // Task4: У какого животного самое длинное имя -> Animal
     public static UsingClasses.Animal longestName(List<UsingClasses.Animal> receivedAnimals) {
-        List<UsingClasses.Animal> newAnimalList = new ArrayList<>(List.copyOf(receivedAnimals));
 
-        newAnimalList.sort(new Comparator<>() {
+        Comparator<UsingClasses.Animal> comparator = new Comparator<>() {
             @Override
             public int compare(UsingClasses.Animal o1, UsingClasses.Animal o2) {
                 return Integer.compare(o2.name().length(), o1.name().length());
             }
-        });
+        };
 
-        return newAnimalList.get(0);
+        return receivedAnimals.stream().min(comparator).get();
     }
 
-    //func 5
+    // Task5: Каких животных больше: самцов или самок -> Sex
     public static UsingClasses.Animal.Sex sexCounter(List<UsingClasses.Animal> receivedAnimals) {
-        int cntM = 0;
-        int cntF = 0;
 
-        for (UsingClasses.Animal element: receivedAnimals) {
-            if (element.sex().equals(UsingClasses.Animal.Sex.M)) {
-                cntM++;
-            } else {
-                cntF++;
-            }
-        }
+        long maleCount = receivedAnimals.stream()
+            .filter(elem -> elem.sex().equals(UsingClasses.Animal.Sex.M))
+            .count();
+        long femaleCount = receivedAnimals.stream()
+            .filter(elem -> elem.sex().equals(UsingClasses.Animal.Sex.F))
+            .count();
 
-        if (cntM >= cntF) {
+        if (maleCount >= femaleCount) {
             return UsingClasses.Animal.Sex.M;
         } else {
             return UsingClasses.Animal.Sex.F;
         }
     }
 
-    //func 6
+    // Task6: Самое тяжелое животное каждого вида -> Map<Animal.Type, Animal>
     public static Map<UsingClasses.Animal.Type, UsingClasses.Animal> biggestWeightPerType(
         List<UsingClasses.Animal> receivedAnimals) {
 
-        Map<UsingClasses.Animal.Type, UsingClasses.Animal> weights = new HashMap<>();
-
-        for (UsingClasses.Animal element: receivedAnimals) {
-            if (!weights.containsKey(element.type()) || weights.get(element.type()).weight() < element.weight()) {
-                weights.put(element.type(), element);
-            }
-        }
-
-        return weights;
+        return receivedAnimals.stream()
+            .collect(Collectors.toMap(UsingClasses.Animal::type, Function.identity(),
+                BinaryOperator.maxBy(Comparator.comparing(UsingClasses.Animal::weight))));
     }
 
-    //func 7
+    // Task7: K-е самое старое животное -> Animal
     public static UsingClasses.Animal oldestAnimalByNumberK(List<UsingClasses.Animal> receivedAnimals,
         int neededAnimalsCount) {
 
-        List<UsingClasses.Animal> newAnimalList = new ArrayList<>(List.copyOf(receivedAnimals));
-
-        newAnimalList.sort(Comparator.comparingInt(UsingClasses.Animal::age));
-        UsingClasses.Animal resultAnimal;
-
-        if (neededAnimalsCount >= newAnimalList.size()) {
-            resultAnimal = newAnimalList.get(newAnimalList.size() - 1);
-        } else {
-            resultAnimal = newAnimalList.get(newAnimalList.size() - 1 - neededAnimalsCount);
-        }
-
-        return resultAnimal;
+        return receivedAnimals.stream()
+            .sorted(Collections.reverseOrder(Comparator.comparing(UsingClasses.Animal::age)))
+            .limit(neededAnimalsCount)
+            .toList()
+            .getLast();
     }
 
-    //func 8
+    // Task8: Самое тяжелое животное среди животных ниже k см -> Optional<Animal>
     public static Optional<UsingClasses.Animal> biggestWeightWithOptionalHeight(List<UsingClasses.Animal>
         receivedAnimals, int optionalHeight) {
 
-        List<UsingClasses.Animal> newAnimalList =
-            new ArrayList<>(receivedAnimals.stream().filter(it -> it.height() < optionalHeight)
-                .toList());
-
-        newAnimalList.sort(Comparator.comparingInt(UsingClasses.Animal::weight));
-
-        if (newAnimalList.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(newAnimalList.get(newAnimalList.size() - 1));
+        return Optional.of(receivedAnimals.stream()
+            .filter(elem -> elem.height() < optionalHeight)
+            .max(Comparator.comparing(UsingClasses.Animal::weight))
+            .get());
     }
 
-    //func 9
+    // Task9: Сколько в сумме лап у животных в списке -> Integer
     public static Integer sumOfPaws(List<UsingClasses.Animal> receivedAnimals) {
-        return Arrays.stream(receivedAnimals.toArray(new UsingClasses.Animal[0]))
-            .mapToInt(UsingClasses.Animal::paws).sum();
+        return receivedAnimals.stream()
+            .mapToInt(UsingClasses.Animal::paws)
+            .sum();
     }
 
-    //func 10
+    // Task10: Список животных, возраст у которых не совпадает с количеством лап -> List<Animal>
     public static List<UsingClasses.Animal> animalsWithDiffPawsAndAge(List<UsingClasses.Animal> receivedAnimals) {
-        return receivedAnimals.stream().filter(it -> it.paws() != it.age()).collect(Collectors.toList());
-    }
-
-    //func 11
-    public static List<UsingClasses.Animal> animalWhichCanBite(List<UsingClasses.Animal> receivedAnimals) {
-        final int MINIMUM_HEIGHT = 100;
-        return receivedAnimals.stream().filter(it -> it.bites() && it.height() > MINIMUM_HEIGHT)
+        return receivedAnimals.stream()
+            .filter(it -> it.paws() != it.age())
             .collect(Collectors.toList());
     }
 
-    //func 12
+    // Task11: Список животных, которые могут укусить (bites == true) и рост которых превышает 100 см -> List<Animal>
+    public static List<UsingClasses.Animal> animalWhichCanBite(List<UsingClasses.Animal> receivedAnimals) {
+        return receivedAnimals.stream()
+            .filter(it -> it.bites() && it.height() > MINIMUM_HEIGHT)
+            .collect(Collectors.toList());
+    }
+
+    // Task12: Сколько в списке животных, вес которых превышает рост -> Integer
     public static Integer weightBiggerThanHeight(List<UsingClasses.Animal> receivedAnimals) {
-        return receivedAnimals.stream().filter(it -> it.weight() > it.height()).toList().size();
+        return Math.toIntExact(receivedAnimals.stream()
+            .filter(it -> it.weight() > it.height())
+            .count());
     }
 
-    //func 13
+    // Task13: Список животных, имена которых состоят из более чем двух слов -> List<Animal>
     public static List<UsingClasses.Animal> animalsWithDoubleName(List<UsingClasses.Animal> receivedAnimals) {
-        return receivedAnimals.stream().filter(it -> it.name().contains(" ")).collect(Collectors.toList());
+        return receivedAnimals.stream()
+            .filter(it -> it.name().contains(" "))
+            .collect(Collectors.toList());
     }
 
-    //func 14
+    // Task14: Есть ли в списке собака ростом более k см -> Boolean
     public static Boolean isDogWithSuchHeightInList(List<UsingClasses.Animal> receivedAnimals, int receivedHeight) {
-        return !receivedAnimals.stream().filter(it -> it.type().equals(UsingClasses.Animal.Type.DOG)
-                && it.height() > receivedHeight).toList().isEmpty();
+        return !receivedAnimals.stream()
+            .filter(it -> it.type().equals(UsingClasses.Animal.Type.DOG)
+                && it.height() > receivedHeight)
+            .toList()
+            .isEmpty();
     }
 
-    //func 15
+    // Task15: Найти суммарный вес животных каждого вида, которым от k до l лет -> Map<Animal.Type, Integer>
     public static Integer sumWeightWithBorders(List<UsingClasses.Animal> receivedAnimals, int k, int l) {
-        return Arrays.stream(receivedAnimals.toArray(new UsingClasses.Animal[0]))
-            .filter(it -> it.age() >= k && it.age() <= l).mapToInt(UsingClasses.Animal::weight).sum();
+        return receivedAnimals.stream()
+            .filter(it -> it.age() >= k && it.age() <= l)
+            .mapToInt(UsingClasses.Animal::weight)
+            .sum();
     }
 
-    //func 16
+    // Task16: Список животных, отсортированный по виду, затем по полу, затем по имени -> List<Animal>
     public static List<UsingClasses.Animal> paramsSortAnimals(List<UsingClasses.Animal> receivedAnimals) {
-        List<UsingClasses.Animal> newAnimalList = new ArrayList<>(List.copyOf(receivedAnimals));
-        newAnimalList.sort(new Comparator<UsingClasses.Animal>() {
-            @Override
-            public int compare(UsingClasses.Animal o1, UsingClasses.Animal o2) {
-                if (!o1.type().equals(o2.type())) {
-                    return o1.type().toString().compareTo(o2.type().toString());
-                } else {
-                    if (!o1.sex().equals(o2.sex())) {
-                        return o1.sex().toString().compareTo(o2.sex().toString());
-                    } else {
-                        return o1.name().compareTo(o2.name());
-                    }
-                }
-            }
-        });
+        Comparator<UsingClasses.Animal> comparator = Comparator.comparing(UsingClasses.Animal::type)
+            .thenComparing(UsingClasses.Animal::sex).thenComparing(UsingClasses.Animal::name);
 
-        return newAnimalList;
+        return receivedAnimals.stream()
+            .sorted(comparator)
+            .toList();
     }
 
-    //func 17
+    //Task17: Правда ли, что пауки кусаются чаще, чем собаки -> Boolean
     public static Boolean spidersOfDogs(List<UsingClasses.Animal> receivedAnimals) {
-        double spidersCount = 0;
-        double dogCount = 0;
-        double spiderBite = 0;
-        double dogBite = 0;
+        List<UsingClasses.Animal> spiderList = receivedAnimals.stream()
+            .filter(elem -> elem.type().equals(UsingClasses.Animal.Type.SPIDER))
+            .toList();
 
-        for (UsingClasses.Animal element: receivedAnimals) {
-            if (element.type().equals(UsingClasses.Animal.Type.SPIDER)) {
-                spidersCount++;
-                if (element.bites()) {
-                    spiderBite++;
-                }
-            } else if (element.type().equals(UsingClasses.Animal.Type.DOG)) {
-                dogCount++;
-                if (element.bites()) {
-                    dogBite++;
-                }
-            }
-        }
+        List<UsingClasses.Animal> dogsList = receivedAnimals.stream()
+            .filter(elem -> elem.type().equals(UsingClasses.Animal.Type.DOG))
+            .toList();
 
-        if (spidersCount == 0 || dogCount == 0) {
+        if (spiderList.isEmpty() || dogsList.isEmpty()) {
             return false;
         } else {
-            return spiderBite / spidersCount > dogBite / dogCount;
+            return spiderList.stream().filter(UsingClasses.Animal::bites).toList().size() / spiderList.size()
+                > dogsList.stream().filter(UsingClasses.Animal::bites).toList().size() / dogsList.size();
         }
     }
 
-    //func 18
+    // Task18: Найти самую тяжелую рыбку в 2-х или более списках -> Animal
     @SafeVarargs public static UsingClasses.Animal theBiggestFish(List<UsingClasses.Animal>...someAnimalLists) {
-        UsingClasses.Animal resultFish = someAnimalLists[0].get(0);
+
+        Stream<UsingClasses.Animal> fishStream = Stream.empty();
+
         for (List<UsingClasses.Animal> list: someAnimalLists) {
-            for (UsingClasses.Animal element: list) {
-                if (element.type().equals(UsingClasses.Animal.Type.FISH) && element.weight() > resultFish.weight()) {
-                    resultFish = element;
-                }
-            }
+            fishStream = Stream.concat(
+                fishStream, list.stream().filter(elem -> elem.type().equals(UsingClasses.Animal.Type.FISH)));
         }
 
-        return resultFish;
+        return fishStream
+            .max(Comparator.comparing(UsingClasses.Animal::weight))
+            .get();
     }
 
-    //func 19
+    // Task19: Животные, в записях о которых есть ошибки -> Map<String, Set<ValidationError>>.
     public static Map<String, Set<UsingClasses.ValidationError>> findAnimalErrors(
-        List<UsingClasses.Animal> receivedAnimals) throws NoSuchFieldException, IllegalAccessException {
+        List<UsingClasses.Animal> receivedAnimals) {
 
-        ArrayList<String> fieldArray = new ArrayList<>(List.of("name", "type", "sex", "age", "height", "weight"));
-        Map<String, Set<UsingClasses.ValidationError>> mapOfErrors = new HashMap<>();
-
-        for (UsingClasses.Animal animal: receivedAnimals) {
-            Set<UsingClasses.ValidationError> setOfErrors = new HashSet<>();
-            for (String field: fieldArray) {
-                try {
-                    setOfErrors.add(new UsingClasses.ValidationError(animal, field));
-                } catch (IllegalAccessException ignored) {
-                }
-            }
-
-            if (!setOfErrors.isEmpty()) {
-                mapOfErrors.put(animal.name(), setOfErrors);
-            }
-        }
-
-        return mapOfErrors;
+        return receivedAnimals.stream()
+            .collect(Collectors.toMap(UsingClasses.Animal::name,
+                UsingClasses::getSetOfErrors));
     }
 
-    //func 20
+    // Task20: Сделать результат предыдущего задания более читабельным -> Map<String, String>
     public static Map<String, String> findAnimalErrorsLikeString(
-        List<UsingClasses.Animal> receivedAnimals) throws NoSuchFieldException, IllegalAccessException {
+        List<UsingClasses.Animal> receivedAnimals) {
 
         Map<String, Set<UsingClasses.ValidationError>> mapOfErrors = findAnimalErrors(receivedAnimals);
         Map<String, String> resultStringMap = new HashMap<>();
 
         for (var mapElement: mapOfErrors.entrySet()) {
-            StringBuilder resultErrorsString = new StringBuilder();
-            for (UsingClasses.ValidationError errorStrings: mapElement.getValue()) {
-                resultErrorsString.append(errorStrings.getMassage());
-            }
-
-            resultStringMap.put(mapElement.getKey(), resultErrorsString.toString());
+            resultStringMap.put(mapElement.getKey(), mapElement.getValue().stream()
+                .map(UsingClasses.ValidationError::getMassage)
+                .collect(Collectors.joining()));
         }
 
         return resultStringMap;

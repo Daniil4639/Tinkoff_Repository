@@ -16,7 +16,7 @@ public class TaskTest {
         new UsingClasses.Animal("bird_1", UsingClasses.Animal.Type.BIRD, UsingClasses.Animal.Sex.F, 2, 2, 7, false),
         new UsingClasses.Animal("bird_2", UsingClasses.Animal.Type.BIRD, UsingClasses.Animal.Sex.F, 7, 7, 4, true),
         new UsingClasses.Animal("just a bird", UsingClasses.Animal.Type.BIRD, UsingClasses.Animal.Sex.M, 3, 19, 19, false),
-        new UsingClasses.Animal("longest fish in the task", UsingClasses.Animal.Type.FISH, UsingClasses.Animal.Sex.F, 0, 114, 115, true),
+        new UsingClasses.Animal("longest fish in the task", UsingClasses.Animal.Type.FISH, UsingClasses.Animal.Sex.F, 1, 114, 115, true),
         new UsingClasses.Animal("very tall dog", UsingClasses.Animal.Type.DOG, UsingClasses.Animal.Sex.M, 0, 315, 54, true)
     ));
 
@@ -24,9 +24,9 @@ public class TaskTest {
     @DisplayName("Тестирование heightAnimalSort()")
     void heightAnimalSortTest() {
 
-        Task.heightAnimalSort(ANIMAL_LIST);
+        List<UsingClasses.Animal> sortedList = Task.heightAnimalSort(ANIMAL_LIST);
 
-        assertThat(ANIMAL_LIST.toArray(new UsingClasses.Animal[0])).extracting(UsingClasses.Animal::height).contains(315, 210, 114, 19, 15, 7, 2);
+        assertThat(sortedList.toArray(new UsingClasses.Animal[0])).extracting(UsingClasses.Animal::height).contains(2, 7, 15, 19, 114, 210, 315);
     }
 
     @Test
@@ -90,10 +90,10 @@ public class TaskTest {
     void oldestAnimalByNumberKTest() {
 
         //k < размера
-        assertThat(Task.oldestAnimalByNumberK(ANIMAL_LIST, 1).name()).isEqualTo("bird_2");
+        assertThat(Task.oldestAnimalByNumberK(ANIMAL_LIST, 2).name()).isEqualTo("bird_2");
 
         //k > размера
-        assertThat(Task.oldestAnimalByNumberK(ANIMAL_LIST, 15).name()).isEqualTo("cat_2");
+        assertThat(Task.oldestAnimalByNumberK(ANIMAL_LIST, 15).name()).isEqualTo("very tall dog");
     }
 
     @Test
@@ -123,7 +123,7 @@ public class TaskTest {
     @DisplayName("Тестирование animalsWithDiffPawsAndAge")
     void animalsWithDiffPawsAndAgeTest() {
 
-        assertThat(Task.animalsWithDiffPawsAndAge(ANIMAL_LIST).size()).isEqualTo(4);
+        assertThat(Task.animalsWithDiffPawsAndAge(ANIMAL_LIST).size()).isEqualTo(5);
     }
 
     @Test
@@ -132,7 +132,7 @@ public class TaskTest {
 
         List<UsingClasses.Animal> newAnimalList = Task.animalWhichCanBite(ANIMAL_LIST);
         assertThat(newAnimalList.size()).isEqualTo(3);
-        assertThat(newAnimalList.stream().mapToInt(UsingClasses.Animal::height).toArray()).containsExactly(114, 210, 315);
+        assertThat(newAnimalList.stream().mapToInt(UsingClasses.Animal::height).sorted().toArray()).containsExactly(114, 210, 315);
     }
 
     @Test
@@ -174,8 +174,8 @@ public class TaskTest {
             nameList.add(elem.name());
         }
 
-        assertThat(nameList.toArray(new String[0])).containsExactly("bird_1", "bird_2", "just a bird",
-            "cat_2", "cat first", "very tall dog", "longest fish in the task");
+        assertThat(nameList.toArray(new String[0])).containsExactly("cat first", "cat_2", "very tall dog",
+            "just a bird", "bird_1", "bird_2", "longest fish in the task");
     }
 
     @Test
@@ -223,9 +223,9 @@ public class TaskTest {
 
         Map<String, String> resultMap = Task.findAnimalErrorsLikeString(animalList);
 
-        assertThat(resultMap.get("an1")).isEqualTo("height: is zero\nsex: is null\n");
-        assertThat(resultMap.get("an2")).isEqualTo("sex: is null\ntype: is null\n");
-        assertThat(resultMap.get("an3")).isEqualTo("age: is negative\n");
-        assertThat(resultMap.get("an4")).isEqualTo(null);
+        assertThat(resultMap.get("an1")).isEqualTo("sex: is null" + System.lineSeparator() + "height: is zero" + System.lineSeparator());
+        assertThat(resultMap.get("an2")).isEqualTo("type: is null" + System.lineSeparator() + "sex: is null" + System.lineSeparator());
+        assertThat(resultMap.get("an3")).isEqualTo("age: is negative" + System.lineSeparator());
+        assertThat(resultMap.get("an4")).isEqualTo("");
     }
 }

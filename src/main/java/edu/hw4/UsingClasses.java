@@ -2,14 +2,55 @@ package edu.hw4;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import static java.util.Arrays.asList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class UsingClasses {
 
-    private final static ArrayList<Integer> PAWS_COUNT = new ArrayList<>(asList(4, 2, 0, 8));
-    private final static String FIELD_IS_NULL = ": is null\n";
-    private final static String FIELD_IS_ZERO = ": is zero\n";
-    private final static String FIELD_IS_NEGATIVE = ": is negative\n";
+    private final static int CAT_AND_DOG_PAWS_COUNT = 4;
+    private final static int BIRD_PAWS_COUNT = 2;
+    private final static int FISH_PAWS_COUNT = 0;
+    private final static int SPIDER_PAWS_COUNT = 8;
+    private final static String FIELD_IS_NULL = ": is null";
+    private final static String FIELD_IS_ZERO = ": is zero";
+    private final static String FIELD_IS_NEGATIVE = ": is negative";
+    private final static String FIELD_NAME = "name";
+    private final static String FIELD_TYPE = "type";
+    private final static String FIELD_SEX = "sex";
+    private final static String FIELD_AGE = "age";
+    private final static String FIELD_HEIGHT = "height";
+    private final static String FIELD_WEIGHT = "weight";
+    private static final List<Field> FIELD_ARRAY;
+
+    static {
+        try {
+            FIELD_ARRAY = new ArrayList<>(List.of(
+                Animal.class.getDeclaredField(FIELD_NAME),
+                Animal.class.getDeclaredField(FIELD_TYPE),
+                Animal.class.getDeclaredField(FIELD_SEX),
+                Animal.class.getDeclaredField(FIELD_AGE),
+                Animal.class.getDeclaredField(FIELD_HEIGHT),
+                Animal.class.getDeclaredField(FIELD_WEIGHT)));
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private UsingClasses() {}
+
+    public static Set<ValidationError> getSetOfErrors(Animal object) {
+        Set<UsingClasses.ValidationError> setOfErrors = new HashSet<>();
+
+        for (Field field: FIELD_ARRAY) {
+            try {
+                setOfErrors.add(new ValidationError(object, field));
+            } catch (IllegalAccessException ignored) {
+            }
+        }
+
+        return setOfErrors;
+    }
 
     public record Animal(
         String name,
@@ -31,77 +72,52 @@ public class UsingClasses {
 
         public int paws() {
             return switch (type) {
-                case CAT, DOG -> PAWS_COUNT.get(0);
-                case BIRD -> PAWS_COUNT.get(1);
-                case FISH -> PAWS_COUNT.get(2);
-                case SPIDER -> PAWS_COUNT.get(PAWS_COUNT.size()) - 1;
+                case CAT, DOG -> CAT_AND_DOG_PAWS_COUNT;
+                case BIRD -> BIRD_PAWS_COUNT;
+                case FISH -> FISH_PAWS_COUNT;
+                case SPIDER -> SPIDER_PAWS_COUNT;
             };
         }
     }
 
     public static class ValidationError {
-        private String massage = null;
+        private final StringBuilder massage = new StringBuilder();
 
-        private void checkName(Animal object, Field field) throws IllegalAccessException {
+        public ValidationError(Animal object, Field field) throws IllegalAccessException {
+
+            checkField(object, field);
+        }
+
+        private void checkField(Animal object, Field field) throws IllegalAccessException {
             if (field.get(object) == null) {
-                massage = field.getName() + FIELD_IS_NULL;
-            } else if (field.get(object).equals(" ")) {
-                massage = field.getName() + ": is empty\n";
+
+                massage.append(field.getName()).append(FIELD_IS_NULL)
+                    .append(System.lineSeparator());
+
+            } else if (field.getName().equals(FIELD_NAME) && field.get(object).equals(" ")) {
+
+                massage.append(field.getName()).append(": is empty")
+                    .append(System.lineSeparator());
+
+            } else if (field.getName().equals(FIELD_AGE) || field.getName().equals(FIELD_HEIGHT)
+                || field.getName().equals(FIELD_WEIGHT)) {
+
+                if ((Integer) field.get(object) == 0) {
+                    massage.append(field.getName()).append(FIELD_IS_ZERO)
+                        .append(System.lineSeparator());
+                } else if ((Integer) field.get(object) < 0) {
+                    massage.append(field.getName()).append(FIELD_IS_NEGATIVE)
+                        .append(System.lineSeparator());
+                } else {
+                    throw new IllegalAccessException();
+                }
             } else {
                 throw new IllegalAccessException();
-            }
-        }
-
-        private void checkTypeAndSex(Animal object, Field field) throws IllegalAccessException {
-            if (field.get(object) == null) {
-                massage = field.getName() + FIELD_IS_NULL;
-            } else {
-                throw new IllegalAccessException();
-            }
-        }
-
-        private void checkAgeHeightWeight(Animal object, Field field) throws IllegalAccessException {
-            if ((Integer) field.get(object) == 0) {
-                massage = field.getName() + FIELD_IS_ZERO;
-            } else if ((Integer) field.get(object) < 0) {
-                massage = field.getName() + FIELD_IS_NEGATIVE;
-            } else {
-                throw new IllegalAccessException();
-            }
-        }
-
-        private void checkBites(Animal object, Field field) throws IllegalAccessException {
-            if ((Integer) field.get(object) == 0) {
-                massage = field.getName() + FIELD_IS_ZERO;
-            } else if ((Integer) field.get(object) < 0) {
-                massage = field.getName() + FIELD_IS_NEGATIVE;
-            } else {
-                throw new IllegalAccessException();
-            }
-        }
-
-        public ValidationError(Animal object, String fieldName) throws NoSuchFieldException, IllegalAccessException {
-            Field field = object.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
-            switch (fieldName) {
-                case "name":
-                    checkName(object, field);
-                    break;
-                case "type":
-                case "sex":
-                    checkTypeAndSex(object, field);
-                    break;
-                case "age":
-                case "height":
-                case "weight":
-                    checkAgeHeightWeight(object, field);
-                    break;
-                default:
             }
         }
 
         public String getMassage() {
-            return massage;
+            return massage.toString();
         }
     }
 }
