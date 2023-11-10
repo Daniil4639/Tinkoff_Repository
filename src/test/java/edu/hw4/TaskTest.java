@@ -223,8 +223,8 @@ public class TaskTest {
 
         Map<String, String> resultMap = Task.findAnimalErrorsLikeString(animalList);
 
-        assertThat(resultMap.get("an1")).isEqualTo("sex: is null" + System.lineSeparator() + "height: is zero" + System.lineSeparator());
-        assertThat(resultMap.get("an2")).isEqualTo("type: is null" + System.lineSeparator() + "sex: is null" + System.lineSeparator());
+        assertThat(resultMap.get("an1")).isEqualTo("height: is zero" + System.lineSeparator() + "sex: is null" + System.lineSeparator());
+        assertThat(resultMap.get("an2")).isEqualTo("sex: is null" + System.lineSeparator() + "type: is null" + System.lineSeparator());
         assertThat(resultMap.get("an3")).isEqualTo("age: is negative" + System.lineSeparator());
         assertThat(resultMap.get("an4")).isEqualTo("");
     }

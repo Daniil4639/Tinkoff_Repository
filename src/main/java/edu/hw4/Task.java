@@ -218,6 +218,7 @@ public class Task {
         for (var mapElement: mapOfErrors.entrySet()) {
             resultStringMap.put(mapElement.getKey(), mapElement.getValue().stream()
                 .map(UsingClasses.ValidationError::getMassage)
+                .sorted()
                 .collect(Collectors.joining()));
         }
 
