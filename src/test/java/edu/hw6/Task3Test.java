@@ -23,7 +23,9 @@ public class Task3Test {
             List<Path> paths = new ArrayList<>();
             entries.forEach(paths::add);
 
-            assertThat(paths.toArray()).containsExactly(Paths.get("checkstyle.xml"), Paths.get("pom.xml"));
+            assertThat(paths.toArray().length).isEqualTo(2);
+            assertThat(paths.toArray()).contains(Paths.get("checkstyle.xml"));
+            assertThat(paths.toArray()).contains(Paths.get("pom.xml"));
         } catch (IOException ignored) {
         }
 
@@ -34,7 +36,8 @@ public class Task3Test {
             List<Path> paths = new ArrayList<>();
             entries.forEach(paths::add);
 
-            assertThat(paths.toArray()).containsExactly(Paths.get("mvnw"));
+            assertThat(paths.toArray().length).isEqualTo(1);
+            assertThat(paths.toArray()).contains(Paths.get("mvnw"));
         } catch (IOException ignored) {
         }
     }
