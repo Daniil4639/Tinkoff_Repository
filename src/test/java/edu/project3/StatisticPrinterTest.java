@@ -24,30 +24,30 @@ public class StatisticPrinterTest {
         System.lineSeparator() +
         "|       Resource        |    Number     |" + System.lineSeparator() +
         "|:---------------------:|--------------:|" + System.lineSeparator() +
-        "|     '/product_2'      |       1       |" + System.lineSeparator() +
         "|     '/product_1'      |       2       |" + System.lineSeparator() +
+        "|     '/product_2'      |       1       |" + System.lineSeparator() +
         System.lineSeparator() +
         "### User-Agent" + System.lineSeparator() +
         System.lineSeparator() +
         "|      Agent name       |    Number     |" + System.lineSeparator() +
         "|:---------------------:|--------------:|" + System.lineSeparator() +
-        "|         Maven         |       1       |" + System.lineSeparator() +
         "|        Debian         |       2       |" + System.lineSeparator() +
+        "|         Maven         |       1       |" + System.lineSeparator() +
         System.lineSeparator() +
         "### Response codes" + System.lineSeparator() +
         System.lineSeparator() +
         "| Code |         Name          |    Number     |" + System.lineSeparator() +
         "|:----:|:---------------------:|--------------:|" + System.lineSeparator() +
-        "| 304 |     Not Modified      |       1       |" + System.lineSeparator() +
-        "| 404 |       Not Found       |       1       |" + System.lineSeparator() +
-        "| 200 |          OK           |       1       |" + System.lineSeparator() +
+        "| 200  |          OK           |       1       |" + System.lineSeparator() +
+        "| 304  |     Not Modified      |       1       |" + System.lineSeparator() +
+        "| 404  |       Not Found       |       1       |" + System.lineSeparator() +
         System.lineSeparator() +
         "### IP addresses of requests" + System.lineSeparator() +
         System.lineSeparator() +
         "|          IP           |    Number     |" + System.lineSeparator() +
         "|:---------------------:|--------------:|" + System.lineSeparator() +
-        "|      93.180.71.3      |       2       |" + System.lineSeparator() +
-        "|     80.91.33.133      |       1       |" + System.lineSeparator();
+        "|     80.91.33.133      |       1       |" + System.lineSeparator() +
+        "|      93.180.71.3      |       2       |" + System.lineSeparator();
 
     @Test
     @DisplayName("Проверка работы StatisticPrinter")

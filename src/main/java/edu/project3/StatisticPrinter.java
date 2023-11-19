@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Objects;
 
@@ -19,7 +21,7 @@ public class StatisticPrinter {
     private final static String DATE_PATTERN = "dd.MM.yyyy";
     private final static int SPECIFIC_FIRST_FIELD_WIDTH = 23;
     private final static int SPECIFIC_SECOND_FIELD_WIDTH = 15;
-    private final static String SPECIFIC_CODES_OUTPUT_FORMAT = "| %s |%-23s|%-15s|";
+    private final static String SPECIFIC_CODES_OUTPUT_FORMAT = "|%-6s|%-23s|%-15s|";
     private final static String CODES_SEPARATOR = "|:----:|:---------------------:|--------------:|";
     private final static String FILE_NAME = "Log_Statistic.";
     private final static String LINE_SWITCH = System.lineSeparator();
@@ -49,6 +51,7 @@ public class StatisticPrinter {
 
     @SuppressWarnings({"RegexpSinglelineJava"})
     public void printData() {
+        dataAnalyzer.fileNames.sort(Comparator.naturalOrder());
         printMetric();
         printResources();
         printAgent();
@@ -114,7 +117,7 @@ public class StatisticPrinter {
         result.append(String.format(SPECIFIC_OUTPUT_FORMAT, centerString(SPECIFIC_FIRST_FIELD_WIDTH, "Resource"),
             centerString(SPECIFIC_SECOND_FIELD_WIDTH, COUNT_STRING))).append(LINE_SWITCH);
         result.append(SEPARATOR).append(LINE_SWITCH);
-        for (var resource: dataAnalyzer.resources.entrySet()) {
+        for (var resource: dataAnalyzer.resources.entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
             result.append(String.format(SPECIFIC_OUTPUT_FORMAT,
                 centerString(SPECIFIC_FIRST_FIELD_WIDTH, "'/" + resource.getKey() + "'"),
                 centerString(SPECIFIC_SECOND_FIELD_WIDTH, resource.getValue().toString()))).append(LINE_SWITCH);
@@ -125,12 +128,12 @@ public class StatisticPrinter {
         result.append(LINE_SWITCH);
         result.append("### Response codes").append(LINE_SWITCH);
         result.append(LINE_SWITCH);
-        result.append(String.format(SPECIFIC_CODES_OUTPUT_FORMAT, "Code",
+        result.append(String.format(SPECIFIC_CODES_OUTPUT_FORMAT, " Code ",
             centerString(SPECIFIC_FIRST_FIELD_WIDTH, "Name"),
             centerString(SPECIFIC_SECOND_FIELD_WIDTH, COUNT_STRING))).append(LINE_SWITCH);
         result.append(CODES_SEPARATOR).append(LINE_SWITCH);
-        for (var code: dataAnalyzer.codes.entrySet()) {
-            result.append(String.format(SPECIFIC_CODES_OUTPUT_FORMAT, code.getKey().toString(),
+        for (var code: dataAnalyzer.codes.entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
+            result.append(String.format(SPECIFIC_CODES_OUTPUT_FORMAT, centerString(6, code.getKey().toString()),
                 centerString(SPECIFIC_FIRST_FIELD_WIDTH,
                     (CODE_NAMES.get(code.getKey()) == null) ? ("?") : (CODE_NAMES.get(code.getKey()))),
                 centerString(SPECIFIC_SECOND_FIELD_WIDTH, code.getValue().toString()))).append(LINE_SWITCH);
@@ -144,7 +147,7 @@ public class StatisticPrinter {
         result.append(String.format(SPECIFIC_OUTPUT_FORMAT, centerString(SPECIFIC_FIRST_FIELD_WIDTH, "IP"),
             centerString(SPECIFIC_SECOND_FIELD_WIDTH, COUNT_STRING))).append(LINE_SWITCH);
         result.append(SEPARATOR).append(LINE_SWITCH);
-        for (var ip: dataAnalyzer.ipCount.entrySet()) {
+        for (var ip: dataAnalyzer.ipCount.entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
             result.append(String.format(SPECIFIC_OUTPUT_FORMAT,
                 centerString(SPECIFIC_FIRST_FIELD_WIDTH, ip.getKey()),
                 centerString(SPECIFIC_SECOND_FIELD_WIDTH, ip.getValue().toString()))).append(LINE_SWITCH);
@@ -158,7 +161,7 @@ public class StatisticPrinter {
         result.append(String.format(SPECIFIC_OUTPUT_FORMAT, centerString(SPECIFIC_FIRST_FIELD_WIDTH, "Agent name"),
             centerString(SPECIFIC_SECOND_FIELD_WIDTH, COUNT_STRING))).append(LINE_SWITCH);
         result.append(SEPARATOR).append(LINE_SWITCH);
-        for (var name: dataAnalyzer.userAgent.entrySet()) {
+        for (var name: dataAnalyzer.userAgent.entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
             result.append(String.format(SPECIFIC_OUTPUT_FORMAT,
                 centerString(SPECIFIC_FIRST_FIELD_WIDTH, name.getKey()),
                 centerString(SPECIFIC_SECOND_FIELD_WIDTH, name.getValue().toString()))).append(LINE_SWITCH);
