@@ -8,7 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Objects;
@@ -21,6 +20,7 @@ public class StatisticPrinter {
     private final static String DATE_PATTERN = "dd.MM.yyyy";
     private final static int SPECIFIC_FIRST_FIELD_WIDTH = 23;
     private final static int SPECIFIC_SECOND_FIELD_WIDTH = 15;
+    private final static int SPECIFIC_CODE_FIELD_WIDTH = 6;
     private final static String SPECIFIC_CODES_OUTPUT_FORMAT = "|%-6s|%-23s|%-15s|";
     private final static String CODES_SEPARATOR = "|:----:|:---------------------:|--------------:|";
     private final static String FILE_NAME = "Log_Statistic.";
@@ -133,7 +133,8 @@ public class StatisticPrinter {
             centerString(SPECIFIC_SECOND_FIELD_WIDTH, COUNT_STRING))).append(LINE_SWITCH);
         result.append(CODES_SEPARATOR).append(LINE_SWITCH);
         for (var code: dataAnalyzer.codes.entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
-            result.append(String.format(SPECIFIC_CODES_OUTPUT_FORMAT, centerString(6, code.getKey().toString()),
+            result.append(String.format(SPECIFIC_CODES_OUTPUT_FORMAT,
+                centerString(SPECIFIC_CODE_FIELD_WIDTH, code.getKey().toString()),
                 centerString(SPECIFIC_FIRST_FIELD_WIDTH,
                     (CODE_NAMES.get(code.getKey()) == null) ? ("?") : (CODE_NAMES.get(code.getKey()))),
                 centerString(SPECIFIC_SECOND_FIELD_WIDTH, code.getValue().toString()))).append(LINE_SWITCH);
