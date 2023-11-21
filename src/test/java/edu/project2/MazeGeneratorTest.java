@@ -5,6 +5,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayDeque;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ExecutionException;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -17,17 +18,17 @@ public class MazeGeneratorTest {
         MazeGenerator mazeGenerator = new MazeGenerator(10, 10);
         mazeGenerator.generate();
 
-        Cell[][] maze = mazeGenerator.getMaze();
+        List<List<Cell>> maze = mazeGenerator.getMaze();
         boolean ok = true;
-        Cell.DIRECTION[] directions = new Cell.DIRECTION[] {
-            Cell.DIRECTION.TOP, Cell.DIRECTION.BOTTOM, Cell.DIRECTION.LEFT, Cell.DIRECTION.RIGHT
+        Direction[] directions = new Direction[] {
+            Direction.TOP, Direction.BOTTOM, Direction.LEFT, Direction.RIGHT
         };
 
         try {
             for (int i = 0; i < 10; i++) {
                 for (int j = 0; j < 10; j++) {
                     for (int k = 0; k < 4; k++) {
-                        if (!maze[i][j].hasWall(directions[k])) {
+                        if (!maze.get(i).get(j).hasWall(directions[k])) {
                             int indY = i;
                             int indX = j;
 
@@ -58,7 +59,7 @@ public class MazeGeneratorTest {
                                     break;
                             }
 
-                            if (maze[indY][indX].hasWall(MazeGenerator.OPPOSITE_DIRECTION.get(directions[k]))) {
+                            if (maze.get(indY).get(indX).hasWall(MazeGenerator.OPPOSITE_DIRECTION.get(directions[k]))) {
                                 throw new Exception();
                             }
                         }
@@ -78,11 +79,11 @@ public class MazeGeneratorTest {
         MazeGenerator mazeGenerator = new MazeGenerator(10, 10);
         mazeGenerator.generate();
 
-        Cell[][] maze = mazeGenerator.getMaze();
+        List<List<Cell>> maze = mazeGenerator.getMaze();
         boolean[][] checkedCells = new boolean[10][10];
 
-        Queue<Pair<Pair<Integer, Integer>, Cell.DIRECTION>> pairQueue = new ArrayDeque<>();
-        pairQueue.add(new ImmutablePair<>(new ImmutablePair<>(0, 0), Cell.DIRECTION.TOP));
+        Queue<Pair<Pair<Integer, Integer>, Direction>> pairQueue = new ArrayDeque<>();
+        pairQueue.add(new ImmutablePair<>(new ImmutablePair<>(0, 0), Direction.TOP));
         boolean ok = true;
 
         try {
@@ -90,52 +91,52 @@ public class MazeGeneratorTest {
                 assert pairQueue.peek() != null;
                 Pair<Integer, Integer> currentPos = pairQueue.peek().getLeft();
                 assert pairQueue.peek() != null;
-                Cell.DIRECTION direction = pairQueue.peek().getRight();
+                Direction direction = pairQueue.peek().getRight();
                 pairQueue.poll();
                 checkedCells[currentPos.getRight()][currentPos.getLeft()] = true;
 
-                if (!maze[currentPos.getRight()][currentPos.getLeft()].hasWall(Cell.DIRECTION.TOP)
-                    && !direction.equals(Cell.DIRECTION.TOP)) {
+                if (!maze.get(currentPos.getRight()).get(currentPos.getLeft()).hasWall(Direction.TOP)
+                    && !direction.equals(Direction.TOP)) {
 
                     if (checkedCells[currentPos.getRight() - 1][currentPos.getLeft()]) {
                         throw new Exception();
                     }
                     checkedCells[currentPos.getRight() - 1][currentPos.getLeft()] = true;
                     pairQueue.add(new ImmutablePair<>(new ImmutablePair<>(currentPos.getLeft(),
-                        currentPos.getRight() - 1), MazeGenerator.OPPOSITE_DIRECTION.get(Cell.DIRECTION.TOP)));
+                        currentPos.getRight() - 1), MazeGenerator.OPPOSITE_DIRECTION.get(Direction.TOP)));
                 }
 
-                if (!maze[currentPos.getRight()][currentPos.getLeft()].hasWall(Cell.DIRECTION.BOTTOM)
-                    && !direction.equals(Cell.DIRECTION.BOTTOM)) {
+                if (!maze.get(currentPos.getRight()).get(currentPos.getLeft()).hasWall(Direction.BOTTOM)
+                    && !direction.equals(Direction.BOTTOM)) {
 
                     if (checkedCells[currentPos.getRight() + 1][currentPos.getLeft()]) {
                         throw new Exception();
                     }
                     checkedCells[currentPos.getRight() + 1][currentPos.getLeft()] = true;
                     pairQueue.add(new ImmutablePair<>(new ImmutablePair<>(currentPos.getLeft(),
-                        currentPos.getRight() + 1), MazeGenerator.OPPOSITE_DIRECTION.get(Cell.DIRECTION.BOTTOM)));
+                        currentPos.getRight() + 1), MazeGenerator.OPPOSITE_DIRECTION.get(Direction.BOTTOM)));
                 }
 
-                if (!maze[currentPos.getRight()][currentPos.getLeft()].hasWall(Cell.DIRECTION.LEFT)
-                    && !direction.equals(Cell.DIRECTION.LEFT)) {
+                if (!maze.get(currentPos.getRight()).get(currentPos.getLeft()).hasWall(Direction.LEFT)
+                    && !direction.equals(Direction.LEFT)) {
 
                     if (checkedCells[currentPos.getRight()][currentPos.getLeft() - 1]) {
                         throw new Exception();
                     }
                     checkedCells[currentPos.getRight()][currentPos.getLeft() - 1] = true;
                     pairQueue.add(new ImmutablePair<>(new ImmutablePair<>(currentPos.getLeft() - 1,
-                        currentPos.getRight()), MazeGenerator.OPPOSITE_DIRECTION.get(Cell.DIRECTION.LEFT)));
+                        currentPos.getRight()), MazeGenerator.OPPOSITE_DIRECTION.get(Direction.LEFT)));
                 }
 
-                if (!maze[currentPos.getRight()][currentPos.getLeft()].hasWall(Cell.DIRECTION.RIGHT)
-                    && !direction.equals(Cell.DIRECTION.RIGHT)) {
+                if (!maze.get(currentPos.getRight()).get(currentPos.getLeft()).hasWall(Direction.RIGHT)
+                    && !direction.equals(Direction.RIGHT)) {
 
                     if (checkedCells[currentPos.getRight()][currentPos.getLeft() + 1]) {
                         throw new Exception();
                     }
                     checkedCells[currentPos.getRight()][currentPos.getLeft() + 1] = true;
                     pairQueue.add(new ImmutablePair<>(new ImmutablePair<>(currentPos.getLeft() + 1,
-                        currentPos.getRight()), MazeGenerator.OPPOSITE_DIRECTION.get(Cell.DIRECTION.RIGHT)));
+                        currentPos.getRight()), MazeGenerator.OPPOSITE_DIRECTION.get(Direction.RIGHT)));
                 }
             }
         } catch (Exception ex) {

@@ -1,6 +1,7 @@
 package edu.project2;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -8,64 +9,61 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class MazeGenerator {
 
-    public static final Map<Cell.DIRECTION, Cell.DIRECTION> OPPOSITE_DIRECTION = Map.ofEntries(
-        Map.entry(Cell.DIRECTION.TOP, Cell.DIRECTION.BOTTOM),
-        Map.entry(Cell.DIRECTION.BOTTOM, Cell.DIRECTION.TOP),
-        Map.entry(Cell.DIRECTION.LEFT, Cell.DIRECTION.RIGHT),
-        Map.entry(Cell.DIRECTION.RIGHT, Cell.DIRECTION.LEFT)
+    public static final Map<Direction, Direction> OPPOSITE_DIRECTION = Map.ofEntries(
+        Map.entry(Direction.TOP, Direction.BOTTOM),
+        Map.entry(Direction.BOTTOM, Direction.TOP),
+        Map.entry(Direction.LEFT, Direction.RIGHT),
+        Map.entry(Direction.RIGHT, Direction.LEFT)
     );
 
-    private Cell[][] cells;
-    private int width;
-    private int height;
+    private final List<List<Cell>> cells;
+    private final int width;
+    private final int height;
 
     public MazeGenerator(int width, int height) {
         this.width = width;
         this.height = height;
-        this.cells = new Cell[height][width];
+        this.cells = new ArrayList<>(height);
 
         for (int externalIterator = 0; externalIterator < height; externalIterator++) {
+            List<Cell> raw = new ArrayList<>();
+
             for (int internalIterator = 0; internalIterator < width; internalIterator++) {
-                cells[externalIterator][internalIterator] = new Cell(internalIterator, externalIterator);
+                raw.add(new Cell(internalIterator, externalIterator));
             }
+
+            cells.add(raw);
         }
+
+
     }
 
-    public Cell[][] getMaze() {
+    public List<List<Cell>> getMaze() {
         return cells;
     }
 
-    private Cell getCell(int x, int y) {
+    public List<Pair<Cell, Direction>> getCellUncheckedNeighbors(Cell cell) {
+        List<Pair<Cell, Direction>> neighbors = new ArrayList<>();
 
-        if (x < 0 || x >= width || y < 0 || y >= height) {
-            return null;
+        if (cell.getY() > 0 && cells.get(cell.getY() - 1).get(cell.getX()).isNotChecked()
+            && cell.hasWall(Direction.TOP)) {
+
+            neighbors.add(new ImmutablePair<>(cells.get(cell.getY() - 1).get(cell.getX()), Direction.TOP));
         }
+        if (cell.getY() < height - 1 && cells.get(cell.getY() + 1).get(cell.getX()).isNotChecked()
+            && cell.hasWall(Direction.BOTTOM)) {
 
-        return cells[y][x];
-    }
-
-    public ArrayList<Pair<Cell, Cell.DIRECTION>> getCellUncheckedNeighbors(Cell cell) {
-        ArrayList<Pair<Cell, Cell.DIRECTION>> neighbors = new ArrayList<>();
-
-        if (cell.getY() > 0 && !cells[cell.getY() - 1][cell.getX()].isChecked()
-            && cell.hasWall(Cell.DIRECTION.TOP)) {
-
-            neighbors.add(new ImmutablePair<>(cells[cell.getY() - 1][cell.getX()], Cell.DIRECTION.TOP));
+            neighbors.add(new ImmutablePair<>(cells.get(cell.getY() + 1).get(cell.getX()), Direction.BOTTOM));
         }
-        if (cell.getY() < height - 1 && !cells[cell.getY() + 1][cell.getX()].isChecked()
-            && cell.hasWall(Cell.DIRECTION.BOTTOM)) {
+        if (cell.getX() > 0 && cells.get(cell.getY()).get(cell.getX() - 1).isNotChecked()
+            && cell.hasWall(Direction.LEFT)) {
 
-            neighbors.add(new ImmutablePair<>(cells[cell.getY() + 1][cell.getX()], Cell.DIRECTION.BOTTOM));
+            neighbors.add(new ImmutablePair<>(cells.get(cell.getY()).get(cell.getX() - 1), Direction.LEFT));
         }
-        if (cell.getX() > 0 && !cells[cell.getY()][cell.getX() - 1].isChecked()
-            && cell.hasWall(Cell.DIRECTION.LEFT)) {
+        if (cell.getX() < width - 1 && cells.get(cell.getY()).get(cell.getX() + 1).isNotChecked()
+            && cell.hasWall(Direction.RIGHT)) {
 
-            neighbors.add(new ImmutablePair<>(cells[cell.getY()][cell.getX() - 1], Cell.DIRECTION.LEFT));
-        }
-        if (cell.getX() < width - 1 && !cells[cell.getY()][cell.getX() + 1].isChecked()
-            && cell.hasWall(Cell.DIRECTION.RIGHT)) {
-
-            neighbors.add(new ImmutablePair<>(cells[cell.getY()][cell.getX() + 1], Cell.DIRECTION.RIGHT));
+            neighbors.add(new ImmutablePair<>(cells.get(cell.getY()).get(cell.getX() + 1), Direction.RIGHT));
         }
 
         return neighbors;
@@ -73,11 +71,11 @@ public class MazeGenerator {
 
     public void generate() {
         Stack<Cell> cellsInOrder = new Stack<>();
-        cellsInOrder.add(cells[0][0]);
+        cellsInOrder.add(cells.get(0).get(0));
         cellsInOrder.peek().makeChecked();
 
         while (!cellsInOrder.empty()) {
-            ArrayList<Pair<Cell, Cell.DIRECTION>> neighbors = getCellUncheckedNeighbors(cellsInOrder.peek());
+            List<Pair<Cell, Direction>> neighbors = getCellUncheckedNeighbors(cellsInOrder.peek());
 
             if (neighbors.isEmpty()) {
                 cellsInOrder.peek().makeChecked();

@@ -1,19 +1,18 @@
 package edu.project2;
 
-public class Cell {
+import java.util.ArrayList;
+import java.util.List;
 
-    public enum DIRECTION {
-        TOP, BOTTOM, LEFT, RIGHT
-    }
+public class Cell {
 
     private final int x;
     private final int y;
     private boolean checked;
-    private final boolean[] walls;
+    private final List<Boolean> walls;
 
     public Cell(int x, int y) {
         checked = false;
-        walls = new boolean[] {true, true, true, true};
+        walls = new ArrayList<>(List.of(true, true, true, true));
         this.x = x;
         this.y = y;
     }
@@ -26,74 +25,46 @@ public class Cell {
         return y;
     }
 
-    public boolean hasWall(DIRECTION side) {
-        boolean answer;
+    public boolean hasWall(Direction side) {
 
-        switch (side) {
-            case TOP:
-                answer = walls[0];
-                break;
-            case BOTTOM:
-                answer = walls[1];
-                break;
-            case LEFT:
-                answer = walls[2];
-                break;
-            case RIGHT:
-                answer = walls[walls.length - 1];
-                break;
-            default:
-                answer = true;
-        }
-
-        return answer;
+        return switch (side) {
+            case TOP -> walls.get(0);
+            case BOTTOM -> walls.get(1);
+            case LEFT -> walls.get(2);
+            case RIGHT -> walls.get(walls.size() - 1);
+            default -> true;
+        };
     }
 
     public void makeChecked() {
         this.checked = true;
     }
 
-    public void makeUnchecked() {
-        this.checked = false;
+    public boolean isNotChecked() {
+        return !checked;
     }
 
-    public boolean isChecked() {
-        return checked;
-    }
-
-    public void addWall(DIRECTION side) {
+    public void addWall(Direction side) {
         switch (side) {
-            case TOP:
-                walls[0] = true;
-                break;
-            case BOTTOM:
-                walls[1] = true;
-                break;
-            case LEFT:
-                walls[2] = true;
-                break;
-            case RIGHT:
-                walls[walls.length - 1] = true;
-                break;
-            default:
+            case TOP -> walls.set(0, true);
+            case BOTTOM -> walls.set(1, true);
+            case LEFT -> walls.set(2, true);
+            case RIGHT -> walls.set(walls.size() - 1, true);
+            default -> {
+                return;
+            }
         }
     }
 
-    public void removeWall(DIRECTION side) {
+    public void removeWall(Direction side) {
         switch (side) {
-            case TOP:
-                walls[0] = false;
-                break;
-            case BOTTOM:
-                walls[1] = false;
-                break;
-            case LEFT:
-                walls[2] = false;
-                break;
-            case RIGHT:
-                walls[walls.length - 1] = false;
-                break;
-            default:
+            case TOP -> walls.set(0, false);
+            case BOTTOM -> walls.set(1, false);
+            case LEFT -> walls.set(2, false);
+            case RIGHT -> walls.set(walls.size() - 1, false);
+            default -> {
+                return;
+            }
         }
     }
 }
