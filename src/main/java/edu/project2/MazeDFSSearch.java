@@ -13,7 +13,8 @@ public class MazeDFSSearch {
     public static List<List<Pair<Integer, Integer>>> findWay(
         List<List<Cell>> maze,
         Pair<Integer, Integer> point1,
-        Pair<Integer, Integer> point2) {
+        Pair<Integer, Integer> point2
+    ) {
 
         List<List<Pair<Integer, Integer>>> previousCell = new ArrayList<>();
 
@@ -55,7 +56,8 @@ public class MazeDFSSearch {
         List<List<Boolean>> wasChecked,
         Pair<Integer, Integer> currentPos,
         Pair<Integer, Integer> point2,
-        boolean[] ok) {
+        boolean[] ok
+    ) {
 
         if (!ok[0]) {
             return;

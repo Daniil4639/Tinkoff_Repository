@@ -15,7 +15,8 @@ public class MazeBFSSearch {
     public static List<List<Pair<Integer, Integer>>> findWay(
         List<List<Cell>> maze,
         Pair<Integer, Integer> point1,
-        Pair<Integer, Integer> point2) {
+        Pair<Integer, Integer> point2
+    ) {
 
         List<List<Boolean>> wasChecked = new ArrayList<>();
 

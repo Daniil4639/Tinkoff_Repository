@@ -48,9 +48,11 @@ public class MazeRender {
         }
     }
 
-    public static int[][] transform(List<List<Pair<Integer, Integer>>> previousArray,
+    public static int[][] transform(
+        List<List<Pair<Integer, Integer>>> previousArray,
         Pair<Integer, Integer> point1,
-        Pair<Integer, Integer> point2) {
+        Pair<Integer, Integer> point2
+    ) {
 
         int[][] resultPath = new int[previousArray.size()][previousArray.get(0).size()];
         Pair<Integer, Integer> previousPair = point2;
@@ -67,10 +69,12 @@ public class MazeRender {
         return resultPath;
     }
 
-    public static void renderWithPath(List<List<Cell>> maze,
+    public static void renderWithPath(
+        List<List<Cell>> maze,
         List<List<Pair<Integer, Integer>>> previousArray,
         Pair<Integer, Integer> point1,
-        Pair<Integer, Integer> point2) {
+        Pair<Integer, Integer> point2
+    ) {
 
         int[][] pathArray = transform(previousArray, point1, point2);
 
