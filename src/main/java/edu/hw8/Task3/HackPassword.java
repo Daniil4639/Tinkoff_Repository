@@ -16,7 +16,6 @@ public class HackPassword {
     private static final int CODE_OF_LITTLE_A = 97;
     private static final int CODE_OF_LITTLE_Z = 122;
     private static final int MD5_SS = 16;
-    private static final int MAX_PASSWORD_LENGTH = 5;
     private static final String HASH_FORMAT = "UTF-8";
     private static final int COMFORT_TIME_FOR_SLEEP = 10;
     private static final int MAX_NUMBER_BOUND = 9;
@@ -38,7 +37,7 @@ public class HackPassword {
         }
     }
 
-    public Map<String, String> nextPasswordSingleThread() throws UnsupportedEncodingException {
+    public Map<String, String> nextPasswordSingleThread(int passwordMaxLength) {
         passwords.add("");
 
         while (!hashMap.isEmpty() && !passwords.isEmpty()) {
@@ -57,7 +56,7 @@ public class HackPassword {
                 throw new RuntimeException();
             }
 
-            if (possiblePassword.length() < MAX_PASSWORD_LENGTH) {
+            if (possiblePassword.length() < passwordMaxLength) {
 
                 for (int code = CODE_OF_LITTLE_A; code <= CODE_OF_LITTLE_Z; code++) {
                     passwords.add(possiblePassword + (char) code);
@@ -73,7 +72,7 @@ public class HackPassword {
         return resultMap;
     }
 
-    public Map<String, String> nextPasswordMultiThread(int threadCount) {
+    public Map<String, String> nextPasswordMultiThread(int threadCount, int passwordMaxLength) {
         passwords.add("");
 
         for (int threadIndex = 0; threadIndex < threadCount; threadIndex++) {
@@ -102,7 +101,7 @@ public class HackPassword {
                         throw new RuntimeException();
                     }
 
-                    if (possiblePassword.length() < MAX_PASSWORD_LENGTH) {
+                    if (possiblePassword.length() < passwordMaxLength) {
                         lock.writeLock().lock();
                         for (int code = CODE_OF_LITTLE_A; code <= CODE_OF_LITTLE_Z; code++) {
                             passwords.add(possiblePassword + (char) code);
