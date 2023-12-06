@@ -5,6 +5,8 @@ import java.util.regex.Pattern;
 
 public class Task5 {
 
+    private static final String PATTERN = "^([А-Я])([0-9]{3})([А-Я]{2})([0-9]{3})$";
+
     private Task5() {}
 
     public static boolean carNumberIsCorrect(String number) {
@@ -12,7 +14,7 @@ public class Task5 {
             return false;
         }
 
-        Pattern numberPattern = Pattern.compile("^([А-Я])([0-9]{3})([А-Я]{2})([0-9]{3})$");
+        Pattern numberPattern = Pattern.compile(PATTERN);
         Matcher numberMatcher = numberPattern.matcher(number);
 
         return numberMatcher.find();

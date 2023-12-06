@@ -11,11 +11,12 @@ import java.util.regex.Pattern;
 public class Task1 {
 
     private static final String TIME_FORMAT = "yyyy-MM-dd, HH:mm";
+    private static final String TIME_PATTERN = "^(.*) - (.*)$";
 
     private Task1() {}
 
     public static Duration averageTimeOfPlay(Collection<String> intervals) {
-        Pattern timePattern = Pattern.compile("^(.*) - (.*)$");
+        Pattern timePattern = Pattern.compile(TIME_PATTERN);
         int intervalsCount = 0;
         long secondsCount = 0;
 
@@ -37,9 +38,7 @@ public class Task1 {
 
         if (intervalsCount == 0) {
             return null;
-        } else {
-
-            return Duration.ofSeconds(secondsCount / intervalsCount);
         }
+        return Duration.ofSeconds(secondsCount / intervalsCount);
     }
 }

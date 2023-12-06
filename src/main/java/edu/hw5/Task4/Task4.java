@@ -5,6 +5,8 @@ import java.util.regex.Pattern;
 
 public class Task4 {
 
+    private static final String PATTERN = "[~!@#$%^&*|]";
+
     private Task4() {}
 
     public static boolean passwordIsCorrect(String password) {
@@ -12,7 +14,7 @@ public class Task4 {
             return false;
         }
 
-        Pattern special = Pattern.compile("[~!@#$%^&*|]");
+        Pattern special = Pattern.compile(PATTERN);
         Matcher matcher = special.matcher(password);
 
         return matcher.find();
