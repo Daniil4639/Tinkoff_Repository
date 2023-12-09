@@ -14,11 +14,5 @@ public class Main {
 
         FractalRenderer.gammaCorrection(image, 1000, 1000, 2);
         SaveImage.save(image, Paths.get("image.png"), "png");
-
-        FractalImage image1 = FractalRenderer.render(1000, 1000, 1000,
-            200, 3, SymmetricType.NONE, NonLinearType.SPHERICAL);
-
-        FractalRenderer.gammaCorrection(image1, 1000, 1000, 2);
-        SaveImage.save(image1, Paths.get("image1.png"), "png");
     }
 }
