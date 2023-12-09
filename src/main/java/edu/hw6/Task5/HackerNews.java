@@ -19,8 +19,6 @@ public class HackerNews {
     private static final String FILE_NEWS_NUMBERS_NAME = "file_numbers.json";
     private static final String FILE_NEWS_TEXT_NAME = "file_news.json";
     private static final Pattern ARTICLE_NAME_PATTERN = Pattern.compile("\"title\":\"(.+)\",\"type");
-    private static final String HACKER_NEWS_TOP_URL = "https://hacker-news.firebaseio.com/v0/topstories.json";
-    private static final String HACKER_NEWS_ARTICLES_URL = "https://hacker-news.firebaseio.com/v0/item/";
 
     private HackerNews() {}
 
@@ -38,7 +36,7 @@ public class HackerNews {
     public static long[] hackerNewsTopStories() {
         try (HttpClient client = HttpClient.newHttpClient()) {
 
-            makeRequest(client, HACKER_NEWS_TOP_URL, FILE_NEWS_NUMBERS_NAME);
+            makeRequest(client, "https://hacker-news.firebaseio.com/v0/topstories.json", FILE_NEWS_NUMBERS_NAME);
 
             File newsNumbersFile = new File(FILE_NEWS_NUMBERS_NAME);
             String codes = null;
@@ -65,7 +63,7 @@ public class HackerNews {
     public static String news(long id) {
         try (HttpClient client = HttpClient.newHttpClient()) {
 
-            makeRequest(client, HACKER_NEWS_ARTICLES_URL + id + ".json", FILE_NEWS_TEXT_NAME);
+            makeRequest(client, "https://hacker-news.firebaseio.com/v0/item/" + id + ".json", FILE_NEWS_TEXT_NAME);
 
             File newsFile = new File(FILE_NEWS_TEXT_NAME);
             String article = null;
