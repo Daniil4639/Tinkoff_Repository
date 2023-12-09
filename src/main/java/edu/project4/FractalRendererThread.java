@@ -26,16 +26,15 @@ public class FractalRendererThread {
     private static NonLinearType nonLinearType;
     private static int linearCount;
     private static List<LinearTransform> linearTransforms;
-    private static final int THREAD_COUNT = 6;
 
     private FractalRendererThread() {}
 
-    public static FractalImage render(int width, int height, int samples,
-        int iterations, int lCount, SymmetricType sType, NonLinearType nLType) {
+    public static FractalImage render(Pair<Integer, Integer> size, int samples,
+        int iterations, int lCount, SymmetricType sType, NonLinearType nLType, int threadCount) {
 
-        screenWidth = width;
-        screenHeight = height;
-        image = new FractalImage(width, height);
+        screenWidth = size.getLeft();
+        screenHeight = size.getRight();
+        image = new FractalImage(screenWidth, screenHeight);
         symmetricType = sType;
         nonLinearType = nLType;
         linearCount = lCount;
@@ -45,7 +44,7 @@ public class FractalRendererThread {
             linearTransforms.add(new LinearTransform(X_MAX, X_MIN, Y_MAX, Y_MIN));
         }
 
-        ExecutorService pool = Executors.newFixedThreadPool(THREAD_COUNT);
+        ExecutorService pool = Executors.newFixedThreadPool(threadCount);
 
         var futures = Stream.generate(() -> CompletableFuture.runAsync(new FractalThread(iterations), pool))
             .limit(samples).toArray(CompletableFuture[]::new);

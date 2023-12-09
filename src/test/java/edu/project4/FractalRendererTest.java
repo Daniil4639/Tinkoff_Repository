@@ -1,5 +1,6 @@
 package edu.project4;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.util.List;
@@ -35,7 +36,7 @@ public class FractalRendererTest {
     void fractalRendererThreadTest() {
         boolean imageIsNotEmpty = false;
 
-        FractalImage image = FractalRendererThread.render(1000, 1000, 5000, 500, 2, SymmetricType.NONE, NonLinearType.POLAR);
+        FractalImage image = FractalRendererThread.render(new ImmutablePair<>(1000, 1000), 5000, 500, 2, SymmetricType.NONE, NonLinearType.POLAR, 2);
 
         for (List<Pixel> raw: image.getMatrix()) {
             for (Pixel elem: raw) {
