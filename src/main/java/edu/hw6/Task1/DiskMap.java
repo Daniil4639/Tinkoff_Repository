@@ -28,7 +28,7 @@ public class DiskMap implements Map<String, String> {
 
     private final Path filePath;
     private final static Logger LOGGER = LogManager.getLogger();
-    private final Pattern entryPattern = Pattern.compile("^(.*): (.*)$");
+    private final Pattern entryPattern = Pattern.compile("^(.*):(.*)$");
     private final String openError = "Undefined error during file opening!";
     private final String readError = "Undefined error during file reading!";
 
@@ -38,7 +38,7 @@ public class DiskMap implements Map<String, String> {
         try (OutputStream outputStream = new BufferedOutputStream(
             Files.newOutputStream(filePath, StandardOpenOption.CREATE, StandardOpenOption.APPEND))) {
 
-            outputStream.write("".getBytes());
+            outputStream.write(("0" + System.lineSeparator()).getBytes());
         } catch (IOException ioException) {
             LOGGER.info(openError);
         }
@@ -50,9 +50,7 @@ public class DiskMap implements Map<String, String> {
 
         try (BufferedReader bufferedReader = Files.newBufferedReader(filePath)) {
 
-            while (bufferedReader.readLine() != null) {
-                lineCount++;
-            }
+            lineCount = Integer.parseInt(bufferedReader.readLine());
         } catch (IOException ioException) {
             LOGGER.info(readError);
         }
@@ -147,7 +145,7 @@ public class DiskMap implements Map<String, String> {
         try (OutputStream outputStream = new BufferedOutputStream(
             Files.newOutputStream(filePath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING))) {
 
-            outputStream.write("".getBytes());
+            outputStream.write(("0" + System.lineSeparator()).getBytes());
         } catch (IOException ioException) {
             LOGGER.info(openError);
         }
@@ -195,6 +193,8 @@ public class DiskMap implements Map<String, String> {
 
         try (BufferedReader bufferedReader = Files.newBufferedReader(filePath)) {
 
+            bufferedReader.readLine();
+
             String entry;
             while ((entry = bufferedReader.readLine()) != null) {
                 Matcher entryMather = entryPattern.matcher(entry);
@@ -221,8 +221,11 @@ public class DiskMap implements Map<String, String> {
             Files.newOutputStream(filePath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING))) {
 
             StringBuilder resultString = new StringBuilder();
+
+            resultString.append(elementsArray.size()).append(System.lineSeparator());
+
             for (int index = 0; index < elementsArray.size(); index++) {
-                resultString.append(elementsArray.get(index).getLeft()).append(": ")
+                resultString.append(elementsArray.get(index).getLeft()).append(":")
                     .append(elementsArray.get(index).getRight()).append(System.lineSeparator());
 
                 outputStream.write(resultString.toString().getBytes());
