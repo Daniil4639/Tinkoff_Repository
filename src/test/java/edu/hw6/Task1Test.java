@@ -34,6 +34,8 @@ public class Task1Test {
         diskMap.putAll(new HashMap<>(Map.ofEntries(new ImmutablePair<>("325", "111"),
             new ImmutablePair<>("11", "03302"), new ImmutablePair<>("23", "112"))));
 
+        assertThat(diskMap.size()).isEqualTo(4);
+
         assertThat(diskMap.values().toArray()).containsExactly("03302", "021", "112", "111");
         assertThat(Arrays.stream(diskMap.keySet().toArray()).sorted().toArray()).containsExactly(
             "11", "22", "23", "325"
