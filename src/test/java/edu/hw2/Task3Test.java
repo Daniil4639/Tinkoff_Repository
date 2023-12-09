@@ -1,8 +1,7 @@
 package edu.hw2;
 
 import org.junit.After;
-import org.junit.Assert;
-import org.junit.jupiter.api.Assertions;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.org.lidalia.slf4jtest.TestLogger;
@@ -20,6 +19,8 @@ public class Task3Test {
         for (int attempt = 0; attempt < 100; attempt++) {
             cycleTest();
         }
+
+        TestLoggerFactory.clear();
     }
 
     void cycleTest() {
@@ -43,11 +44,6 @@ public class Task3Test {
                     .isEqualTo("Connection error!");
             }
         }
-    }
-
-    @After
-    public void clearLoggers() {
-        TestLoggerFactory.clear();
     }
 }
 
