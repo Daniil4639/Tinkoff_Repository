@@ -9,10 +9,16 @@ public class Main {
 
     @SuppressWarnings("MagicNumber")
     public static void main(String[] args) {
-        FractalImage image = FractalRendererThread.render(new ImmutablePair<>(4000, 4000), 5000,
-            700, 10, SymmetricType.ROTATION_45_DEG, NonLinearType.SPHERICAL, 2);
+        FractalImage image = FractalRendererThread.render(new ImmutablePair<>(1000, 1000), 1000,
+            200, 3, SymmetricType.NONE, NonLinearType.SPHERICAL, 2);
 
-        FractalRenderer.gammaCorrection(image, 4000, 4000, 2);
+        FractalRenderer.gammaCorrection(image, 1000, 1000, 2);
         SaveImage.save(image, Paths.get("image.png"), "png");
+
+        FractalImage image1 = FractalRenderer.render(1000, 1000, 1000,
+            200, 3, SymmetricType.NONE, NonLinearType.SPHERICAL);
+
+        FractalRenderer.gammaCorrection(image1, 1000, 1000, 2);
+        SaveImage.save(image1, Paths.get("image1.png"), "png");
     }
 }

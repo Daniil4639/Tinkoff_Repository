@@ -13,7 +13,7 @@ public class FractalRendererTest {
     void fractalRendererTest() {
         boolean imageIsNotEmpty = false;
 
-        FractalImage image = FractalRenderer.render(1000, 1000, 5000, 500, 2, SymmetricType.NONE, NonLinearType.POLAR);
+        FractalImage image = FractalRenderer.render(1000, 1000, 1000, 100, 2, SymmetricType.NONE, NonLinearType.POLAR);
 
         for (List<Pixel> raw: image.getMatrix()) {
             for (Pixel elem: raw) {
@@ -36,7 +36,7 @@ public class FractalRendererTest {
     void fractalRendererThreadTest() {
         boolean imageIsNotEmpty = false;
 
-        FractalImage image = FractalRendererThread.render(new ImmutablePair<>(1000, 1000), 5000, 500, 2, SymmetricType.NONE, NonLinearType.POLAR, 2);
+        FractalImage image = FractalRendererThread.render(new ImmutablePair<>(1000, 1000), 1000, 100, 2, SymmetricType.NONE, NonLinearType.POLAR, 2);
 
         for (List<Pixel> raw: image.getMatrix()) {
             for (Pixel elem: raw) {

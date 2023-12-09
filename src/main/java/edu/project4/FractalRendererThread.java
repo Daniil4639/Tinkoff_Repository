@@ -44,13 +44,17 @@ public class FractalRendererThread {
             linearTransforms.add(new LinearTransform(X_MAX, X_MIN, Y_MAX, Y_MIN));
         }
 
-        ExecutorService pool = Executors.newFixedThreadPool(threadCount);
+        List<FractalThread> threads = new ArrayList<>();
+        for (int threadIndex = 0; threadIndex < threadCount; threadIndex++) {
+            threads.add(new FractalThread(iterations, samples / threadCount));
+        }
 
-        var futures = Stream.generate(() -> CompletableFuture.runAsync(new FractalThread(iterations), pool))
-            .limit(samples).toArray(CompletableFuture[]::new);
+        var futures = Stream.generate(() -> CompletableFuture
+                .runAsync(new FractalThread(iterations, samples / threadCount)))
+                .limit(threadCount)
+                .toArray(CompletableFuture[]::new);
 
         CompletableFuture.allOf(futures).join();
-        pool.close();
 
         return image;
     }
@@ -116,32 +120,34 @@ public class FractalRendererThread {
         pixel.hitCount++;
     }
 
-    private record FractalThread(int iterations) implements Runnable {
+    private record FractalThread(int iterations, int samples) implements Runnable {
 
         @Override
         public void run() {
-            double nextX = ThreadLocalRandom.current().nextDouble(X_MIN, X_MAX);
-            double nextY = ThreadLocalRandom.current().nextDouble(Y_MIN, Y_MAX);
+            for (int i = 0; i < samples; i++) {
+                double nextX = ThreadLocalRandom.current().nextDouble(X_MIN, X_MAX);
+                double nextY = ThreadLocalRandom.current().nextDouble(Y_MIN, Y_MAX);
 
-            for (int step = START_ITERATION_COUNT; step < iterations; step++) {
-                int linearIndex = ThreadLocalRandom.current().nextInt(0, linearCount);
+                for (int step = START_ITERATION_COUNT; step < iterations; step++) {
+                    int linearIndex = ThreadLocalRandom.current().nextInt(0, linearCount);
 
-                Pair<Double, Double> linearValues = linearTransforms.get(
-                    linearIndex).eval(nextX, nextY);
+                    Pair<Double, Double> linearValues = linearTransforms.get(
+                        linearIndex).eval(nextX, nextY);
 
-                Pair<Double, Double> nonLinearValues = NonLinearTransform.eval(linearValues, nonLinearType);
+                    Pair<Double, Double> nonLinearValues = NonLinearTransform.eval(linearValues, nonLinearType);
 
-                nextX = nonLinearValues.getLeft();
-                nextY = nonLinearValues.getRight();
+                    nextX = nonLinearValues.getLeft();
+                    nextY = nonLinearValues.getRight();
 
-                if (step >= 0) {
-                    int x1 = (int) (((X_MAX - nextX) / (X_MAX - X_MIN)) * screenWidth);
-                    int y1 = (int) (((Y_MAX - nextY) / (Y_MAX - Y_MIN)) * screenHeight);
+                    if (step >= 0) {
+                        int x1 = (int) (((X_MAX - nextX) / (X_MAX - X_MIN)) * screenWidth);
+                        int y1 = (int) (((Y_MAX - nextY) / (Y_MAX - Y_MIN)) * screenHeight);
 
-                    if (x1 < screenWidth && x1 >= 0 && y1 < screenHeight && y1 >= 0) {
-                        colorPixel(image.getMatrix().get(y1).get(x1), linearTransforms.get(linearIndex));
+                        if (x1 < screenWidth && x1 >= 0 && y1 < screenHeight && y1 >= 0) {
+                            colorPixel(image.getMatrix().get(y1).get(x1), linearTransforms.get(linearIndex));
 
-                        makeSymmetric(symmetricType, image, linearTransforms.get(linearIndex), x1, y1);
+                            makeSymmetric(symmetricType, image, linearTransforms.get(linearIndex), x1, y1);
+                        }
                     }
                 }
             }
