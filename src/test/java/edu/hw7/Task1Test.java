@@ -12,7 +12,7 @@ public class Task1Test {
     @DisplayName("Проверка работы SomeStreamsAddition")
     void someStreamsAdditionTest() {
         SomeStreamsAddition streamsAddition = new SomeStreamsAddition();
-        streamsAddition.incrementCount();
+        streamsAddition.incrementCount(3);
 
         assertThat(streamsAddition.getGeneralCount() != null && streamsAddition.getGeneralCount() instanceof AtomicInteger).isTrue();
         assertThat(streamsAddition.getGeneralCount().get()).isEqualTo(300_000);

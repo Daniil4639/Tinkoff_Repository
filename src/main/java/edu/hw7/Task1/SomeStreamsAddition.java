@@ -1,6 +1,8 @@
 package edu.hw7.Task1;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 public class SomeStreamsAddition {
 
@@ -16,32 +18,21 @@ public class SomeStreamsAddition {
         return generalCount;
     }
 
-    public void incrementCount() {
-        Thread firstIncrement = new Thread(() -> {
+    public void incrementCount(int threadCount) {
+        List<Thread> threadList = Stream.generate(() -> new Thread(() -> {
             for (int i = 0; i < rangeCheckNumber; i++) {
                 generalCount.incrementAndGet();
             }
-        });
-        Thread secondIncrement = new Thread(() -> {
-            for (int i = 0; i < rangeCheckNumber; i++) {
-                generalCount.incrementAndGet();
-            }
-        });
-        Thread thirdIncrement = new Thread(() -> {
-            for (int i = 0; i < rangeCheckNumber; i++) {
-                generalCount.incrementAndGet();
-            }
-        });
+        })).limit(threadCount).toList();
 
-        firstIncrement.start();
-        secondIncrement.start();
-        thirdIncrement.start();
+        for (var thread: threadList) {
+            thread.start();
+        }
 
         try {
-            firstIncrement.join();
-            secondIncrement.join();
-            thirdIncrement.join();
-
+            for (var thread: threadList) {
+                thread.join();
+            }
         } catch (InterruptedException e) {
             generalCount.updateAndGet(val -> -1);
         }
