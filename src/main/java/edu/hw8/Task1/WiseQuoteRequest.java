@@ -9,8 +9,6 @@ import org.apache.logging.log4j.Logger;
 
 public class WiseQuoteRequest implements Runnable {
 
-    private final static String ERROR_MESSAGE = "Something went wrong!";
-
     private final static Map<String, String> QUOTES = Map.ofEntries(
         Map.entry("личность", "Не переходи на личности там, где их нет"),
         Map.entry("оскорбления", "Если твои противники перешли на личные "

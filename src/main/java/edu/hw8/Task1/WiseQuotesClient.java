@@ -14,13 +14,14 @@ public class WiseQuotesClient {
     private final static Logger LOGGER = LogManager.getLogger();
     private final static Scanner IN = new Scanner(System.in);
     private final static String ERROR_MESSAGE = "Request went wrong!";
+    private final static String HOST_NAME = "localhost";
     private final static String END_LINE = "/end";
     private final static int PORT_NUMBER = 4004;
 
     private WiseQuotesClient() {}
 
     public static void makeRequest(String message) {
-        try (Socket client = new Socket("localhost", PORT_NUMBER)) {
+        try (Socket client = new Socket(HOST_NAME, PORT_NUMBER)) {
             try (PrintWriter output = new PrintWriter(client.getOutputStream())) {
                 try (BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()))) {
 

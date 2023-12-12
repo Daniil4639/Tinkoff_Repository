@@ -17,14 +17,8 @@ public class FixedThreadPool implements ThreadPool {
     }
 
     public boolean tasksAreEmpty() {
-        //lock.readLock().lock();
         boolean empty;
-
-        try {
-            empty = TASKS.isEmpty();
-        } finally {
-            //lock.readLock().unlock();
-        }
+        empty = TASKS.isEmpty();
 
         return empty;
     }
@@ -34,20 +28,11 @@ public class FixedThreadPool implements ThreadPool {
     }
 
     public Runnable getTask() {
-        //lock.readLock().lock();
         Runnable task;
 
-        try {
-            task = TASKS.poll();
-        } finally {
-            //lock.readLock().unlock();
-        }
+        task = TASKS.poll();
 
         return task;
-    }
-
-    public Queue<Runnable> getTasks() {
-        return TASKS;
     }
 
     @Override
@@ -64,19 +49,13 @@ public class FixedThreadPool implements ThreadPool {
 
     @Override
     public void execute(Runnable runnable) {
-        //lock.writeLock().lock();
-
-        try {
-            if (!CLOSED.get()) {
-                TASKS.add(runnable);
-            }
-        } finally {
-            //lock.writeLock().unlock();
+        if (!CLOSED.get()) {
+            TASKS.add(runnable);
         }
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         CLOSED.set(true);
         TASKS.clear();
     }
