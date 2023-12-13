@@ -1,6 +1,8 @@
 package edu.hw10.Task1;
 
-public class MyClass {
+import edu.hw10.Task2.Cache;
+
+public class MyClass implements MyInterface {
 
     @Max(value = 90)
     @Min(value = 80)
@@ -16,5 +18,16 @@ public class MyClass {
 
     public static MyClass fabric(int a1, String str) {
         return new MyClass(a1, str);
+    }
+
+    @Override
+    @Cache(persist = true)
+    public String getStr() {
+        return str;
+    }
+
+    @Cache(persist = false)
+    public void setStr(String str) {
+        this.str = str;
     }
 }
