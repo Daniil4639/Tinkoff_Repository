@@ -14,6 +14,7 @@ public class FibAppender implements ByteCodeAppender {
     private static final int MAX_LOCAL_SIZE = 5;
 
     @Override
+    @SuppressWarnings("MagicNumber")
     public @NotNull Size apply(
         MethodVisitor methodVisitor,
         Implementation.@NotNull Context context,
@@ -62,7 +63,8 @@ public class FibAppender implements ByteCodeAppender {
         //L5
 
         methodVisitor.visitLabel(l5);
-        methodVisitor.visitFrame(Opcodes.F_APPEND, 3, new Object[]{Opcodes.INTEGER, Opcodes.INTEGER, Opcodes.INTEGER}, 0, null);
+        methodVisitor.visitFrame(Opcodes.F_APPEND, 3,
+            new Object[]{Opcodes.INTEGER, Opcodes.INTEGER, Opcodes.INTEGER}, 0, null);
         methodVisitor.visitVarInsn(Opcodes.ILOAD, 3);
         methodVisitor.visitVarInsn(Opcodes.ILOAD, 0);
         methodVisitor.visitJumpInsn(Opcodes.IF_ICMPEQ, l6);
