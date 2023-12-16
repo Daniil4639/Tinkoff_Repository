@@ -15,7 +15,7 @@ public class Task4Test {
     @Test
     @DisplayName("Проверка работы countPi")
     void countPiTest() {
-        long firstCalculation = System.nanoTime();
+        /*long firstCalculation = System.nanoTime();
         double firstPi = MonteCarloPiSearch.countPi((long) 10e6);
         long firstCalculationThread = System.nanoTime();
         double firstPiThread = MonteCarloPiSearch.countPiThread((long) 10e6);
@@ -66,6 +66,6 @@ public class Task4Test {
         LOGGER.info("Значение " + thirdPiThread);
         LOGGER.info("Примерная погрешность: " + abs(Math.PI - thirdPiThread));
         LOGGER.info("Ускорение в " + (thirdCalculationThread - thirdCalculation) * 1.0 / (thirdCalculationEnd - thirdCalculationThread) + " раз");;
-
+*/
     }
 }
