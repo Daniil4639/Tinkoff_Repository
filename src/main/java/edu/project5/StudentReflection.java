@@ -1,5 +1,11 @@
 package edu.project5;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.Scope;
@@ -12,20 +18,17 @@ import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 import org.openjdk.jmh.runner.options.TimeValue;
 
-import java.lang.invoke.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.concurrent.TimeUnit;
-
 @State(Scope.Thread)
 public class StudentReflection {
 
-    edu.project5.Student student;
-    MethodHandle handle;
-    Method method;
+    private edu.project5.Student student;
+    private MethodHandle handle;
+    private Method method;
+
 
     public StudentReflection() {}
 
+    @SuppressWarnings("MagicNumber")
     public void check() {
         try {
             Options options = new OptionsBuilder()
@@ -55,8 +58,9 @@ public class StudentReflection {
         MethodType type = MethodType.methodType(String.class);
         MethodHandles.Lookup lookup = MethodHandles.publicLookup();
         try {
-            handle = lookup.findVirtual(Student.class, "getName", type);
-            method = Student.class.getMethod("getName");
+            String methodName = "getName";
+            handle = lookup.findVirtual(Student.class, methodName, type);
+            method = Student.class.getMethod(methodName);
         } catch (IllegalAccessException | NoSuchMethodException error) {
             throw new RuntimeException();
         }
